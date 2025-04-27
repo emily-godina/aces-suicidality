@@ -2,7 +2,7 @@
 ### Application of Epidemiologic Methods - Spring 2025
 
 [Linking RStudio with Github](https://happygitwithr.com/rstudio-git-github.html)
-[GitHub Passkey Information](https://docs.github.com/en/authentication/authenticating-with-a-passkey/managing-your-passkeys)
+[Need To Link]
 
 [GitHub Youtube Tutorial](https://www.youtube.com/watch?v=S7XpTAnSDL4) 
 
