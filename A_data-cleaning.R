@@ -15,6 +15,7 @@ brfss20 <- read_dta("WA_BRFSS_2020.dta")
 
 #loading packages
 library(tidyverse)
+library(haven)
 
 
 ### ---- DATA MANAGEMENT & CLEANUP ---- ###
@@ -96,5 +97,5 @@ exp_out <- dplyr::select(brfss20,
 
   ### ---- EXPORTING NEW DATASET ---- ###
   
-  saveRDS(brfss20, file = "brfss_wa_2020.rds")
+  write_dta(brfss20, "brfss_2020.dta")
 
