@@ -13,6 +13,8 @@ rm(list = ls())
 library(tidyverse)
 library(epiR)
 
+#importing dataset
+brfss20 <- read_dta("brfss_2020.dta")
 
 ### ---- QUANTIFYING EXPOSURES ---- ###
 
