@@ -111,9 +111,34 @@ pc.9.9 <- epi.ssxsectn(
 pc.9.9$pr
 
 
-### ---- TABLES ---- ###
+### ---- MERGING & TABLES ---- ###
 
-rbind()
+#merging seperate power calculations together
+pc.49 <- rbind(pc.49.8, pc.49.85, pc.49.9)
+pc.9 <- rbind(pc.9.8, pc.9.85, pc.9.9)
+
+power_calculations <- rbind(pc.49, pc.9)
+
+#cleaning 
+power_calculations <- as.data.frame(power_calculations) %>%
+  mutate(MDPR = str_extract_all(pr, "[0-9\\.]+")) %>%
+  unnest_wider(MDPR, names_sep = "_")
+
+power_calculations$MDPR_1 <- round(as.double(power_calculations$MDPR_1), digits = 3)
+power_calculations$MDPR_2 <- round(as.double(power_calculations$MDPR_2), digits = 3)
+power_calculations$or <- NULL
+power_calculations$pr <- NULL
+power_calculations$pdexp0 <- c(0.497, 0.497, 0.497, 9.790, 9.790, 9.790)
+
+
+reactable(power_calculations %>% select(power, pdexp0, MDPR_1, MDPR_2),
+          columns = list(power = colDef(name = "Fixed Power (%)"),
+                         pdexp0 = colDef(name = "Prevalence in Unexposed Group"),
+                         MDPR_1 = colDef(name = "MDPR (Protective)"),
+                         MDPR_2 = colDef(name = "MDPR (Risk)")),
+          bordered = T, outlined = T, striped = T,
+          defaultColDef = colDef(align = "center"))
+
 
 # --- PRIMARY AIM --- #
 
