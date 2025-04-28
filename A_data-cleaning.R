@@ -46,6 +46,15 @@ brfss20 <- dplyr::select(brfss20,
     # "_age_g2", "_race1", "_impsex", "_impage"
 
 
+### ---- ESTABLISHING SAMPLE SIZE ---- ###
+
+#removing individuals that don't meet the requirements 
+
+#there are 12,902 participants
+brfss20 <- brfss20 %>%
+  drop_na(acepunch2, acehurt2, aceswear2, sex, age)
+#there are now 10,705 participants
+
 
 ### ---- QUANTIFYING EXPOSRES & OUTCOME ---- ###
 
@@ -59,10 +68,10 @@ exp_out <- dplyr::select(brfss20,
   table(exp_out$acepunch2)
   # Did your parents or adults in your home ever slap, 
   # hit, kick, punch or beat each other up?
-    # Yes = 1443 
-    # No = 9127
+    # Yes = 1442
+    # No = 9121
     # Don't Know = 50
-    # Refused = 93
+    # Refused = 92
 
   
 # EXPOSURE QUESTION TWO
@@ -70,7 +79,7 @@ exp_out <- dplyr::select(brfss20,
   # Did your parents or adult in your home ever hit, 
   # beat, kick, or physically hurt you in any way?
     # Yes = 1718 
-    # No = 8879
+    # No = 8875
     # Don't Know = 16
     # Refused = 96
  
@@ -89,8 +98,8 @@ exp_out <- dplyr::select(brfss20,
   table(exp_out$suicide)
   # At any time in the past 12 months did you seriously
   # think about trying to kill yourself?
-      # Yes = 263 
-      # No = 10525
+      # Yes = 262 
+      # No = 10414
       # Don't Know = 3
       # Refused = 26
 
