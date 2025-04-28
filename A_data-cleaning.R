@@ -55,6 +55,13 @@ brfss20 <- brfss20 %>%
   drop_na(acepunch2, acehurt2, aceswear2, sex, age)
 #there are now 10,705 participants
 
+#removing participants who experienced other ACEs but not our ACEs
+brfss20 <- brfss20 %>%
+  filter(!((acedeprs2 == 1 | acedrink == 1 | acedrugs == 1 | aceprisn == 1 |
+          acedivrc == 1  | acetouch2 == 1 | acethem2 == 1 | acehvsx2 == 1) & 
+          (acepunch2 == 2 & acehurt2 == 2 & aceswear2 == 2)))
+#there are now 8,365 participants 
+
 
 ### ---- QUANTIFYING EXPOSRES & OUTCOME ---- ###
 
@@ -69,7 +76,7 @@ exp_out <- dplyr::select(brfss20,
   # Did your parents or adults in your home ever slap, 
   # hit, kick, punch or beat each other up?
     # Yes = 1442
-    # No = 9121
+    # No = 6781
     # Don't Know = 50
     # Refused = 92
 
@@ -79,7 +86,7 @@ exp_out <- dplyr::select(brfss20,
   # Did your parents or adult in your home ever hit, 
   # beat, kick, or physically hurt you in any way?
     # Yes = 1718 
-    # No = 8875
+    # No = 6535
     # Don't Know = 16
     # Refused = 96
  
@@ -89,7 +96,7 @@ exp_out <- dplyr::select(brfss20,
   # Did your parents or adults in your home ever swear at you, 
    # insult you, or put you down?
      # Yes = 3410 
-     # No = 7132
+     # No = 4792
      # Don't Know = 53
      # Refused = 110
    
@@ -98,11 +105,18 @@ exp_out <- dplyr::select(brfss20,
   table(exp_out$suicide)
   # At any time in the past 12 months did you seriously
   # think about trying to kill yourself?
-      # Yes = 262 
-      # No = 10414
+      # Yes = 212 
+      # No = 8127
       # Don't Know = 3
-      # Refused = 26
+      # Refused = 22
 
+# NO ACES OF INTEREST
+  table((exp_out$acehurt2 == 2 & exp_out$acepunch2 == 2 & exp_out$aceswear2 == 2))
+  # Individuals that did not experience household violence, physical abuse,
+  # or verbal abuse
+      # TRUE = 4260
+      # FALSE = 4105
+  
 
   ### ---- EXPORTING NEW DATASET ---- ###
   
