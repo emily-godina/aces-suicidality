@@ -15,3 +15,16 @@
 ---
 #### Project Resources
 [Aesthetic Tables - Reactable Package](https://glin.github.io/reactable/articles/examples.html#basic-usage)
+
+---
+#### Focrcing Git (In Terminal)
+*What to do if there is a merge conflict!*
+
+Step 1. Check GitHub
+Step 2. Decide which version you want: YOURS or TEAM MEMBERS
+  Step 2a. You can always reach out to whoever's code is on GitHub
+Step 3. If you're overiding with yours:
+  put this in your terminal: git push --force
+Step 3. If you're discard your own version and use version on GitHub:
+  put this in your terminal: git reset --hard origin/main
+
