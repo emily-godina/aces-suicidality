@@ -2,6 +2,7 @@
 # TITLE: WA BRFSS 2020 - Power Calculation 
 # Last Edited: 04-27-25
 # Description: In this script, we will conduct a power calculation to determine
+    # minimally detectable prevalence ratio
 
 
 ### ---- SETUP & DATA IMPORT ---- ###
@@ -132,8 +133,8 @@ power_calculations$pdexp0 <- c(0.497, 0.497, 0.497, 9.790, 9.790, 9.790)
 
 
 reactable(power_calculations %>% select(power, pdexp0, MDPR_1, MDPR_2),
-          columns = list(power = colDef(name = "Fixed Power (%)"),
-                         pdexp0 = colDef(name = "Prevalence in Unexposed Group"),
+          columns = list(power = colDef(name = "Fixed Power"),
+                         pdexp0 = colDef(name = "Prevalence in Unexposed Group (%)"),
                          MDPR_1 = colDef(name = "MDPR (Protective)"),
                          MDPR_2 = colDef(name = "MDPR (Risk)")),
           bordered = T, outlined = T, striped = T,
