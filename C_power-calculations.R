@@ -13,7 +13,6 @@ rm(list = ls())
 #loading packages
 library(tidyverse)
 library(reactable)
-library(gt)
 library(epiR)
 
 #importing dataset
