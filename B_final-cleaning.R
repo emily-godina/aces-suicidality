@@ -19,6 +19,10 @@ library(gt)
 brfss20 <- read_dta("brfss_2020.dta")
 View(brfss20)
 
+
+
+### ---- DATA CLEANING ---- ###
+
 #remove all mental health k6 items
 brfss20 <- brfss20 %>%
   select(-misnervs, -mishopls, -misrstls, -misdeprd, -miseffrt, -miswtles, 
@@ -29,13 +33,14 @@ brfss20 <- brfss20 %>%
   select(-acedeprs2, -acedrink, -acedrugs, -aceprisn, -acedivrc,
          -acetouch2, -acethem2, -acehvsx2)
 
-
-
-#remove _ from variables
+#remove _ from variable names
 names(brfss20) <- sub("^_", "", names(brfss20))
 
 
-#categorize age into 6 bins
+
+### ---- CREATE FACTOR VARIABLES ---- ###
+
+#categorize age into 8 bins
 brfss20 <- brfss20 %>%
   mutate(age_group = case_when(
     age >= 18 & age <= 24 ~ "18-24",
@@ -78,6 +83,8 @@ brfss20 <- brfss20 %>%
 view(brfss20)
 
 
+### ---- RECODE VARIABLES ---- ###
+
 #recode ace variables into 1,0, NAs
 brfss20 <- brfss20 %>%
   mutate(
@@ -109,6 +116,7 @@ brfss20 <- brfss20 %>%
   )
 
 
+### ---- CREATE OUR TABLE 1 ---- ###
 
 #create table 1
 # need to decide title/caption, what we're doing with NAs "unknowns"
