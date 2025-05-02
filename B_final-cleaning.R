@@ -122,7 +122,7 @@ table1 <- brfss20 %>%
     label = list(
       sex_f ~ "Sex",
       age_group ~ "Age (years)",
-      raceth_f ~ "Race/Ethnicity",
+      raceth_f ~ "Race/Ethnicity", #need to decide how we're doing this
       acepunch_f ~ "Witnessed Household Violence (Hit/Hurt)",
       acehurt_f ~ "Physical Abuse (Hit/Hurt)",
       aceswear_f ~ "Verbal Abuse (Sworn/Insulted)"
