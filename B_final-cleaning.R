@@ -1,4 +1,4 @@
-# TITLE: WA BRFSS 2020 - Data cleaning 2
+# TITLE: WA BRFSS 2020 - Data Cleaning 2
 # Last Edited: 05-1-2025
 # Description: In this script, we will clean and recode our dataset.
 
@@ -11,6 +11,8 @@ rm(list = ls())
 #loading packages
 library(tidyverse)
 library(reactable)
+library(haven)
+library(gtsummary)
 library(gt)
 
 #importing dataset
@@ -41,11 +43,14 @@ brfss20 <- brfss20 %>%
     age >= 35 & age <= 44 ~ "35-44",
     age >= 45 & age <= 54 ~ "45-54",
     age >= 55 & age <= 64 ~ "55-64",
-    age >= 65             ~ "65 or older",
+    age >= 65 & age <= 74 ~ "65-74",
+    age >= 75 & age <= 84 ~ "75-84",
+    age >= 80             ~ "85+",
     TRUE ~ NA_character_
   )) %>%
   mutate(age_group = factor(age_group, levels = c("18-24", "25-34", "35-44", 
-                                                  "45-54", "55-64", "65 or older")))
+                                                  "45-54", "55-64", "65-74", 
+                                                  "75-84", "85+")))
 
 
 #label sex
