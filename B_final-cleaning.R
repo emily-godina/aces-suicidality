@@ -103,7 +103,7 @@ brfss20 <- brfss20 %>%
   )
 
 
-#recode and label suicide
+#recode and label suicide variable
 brfss20 <- brfss20 %>%
   mutate(
     suicide = case_when(
@@ -119,7 +119,7 @@ brfss20 <- brfss20 %>%
 ### ---- CREATE OUR TABLE 1 ---- ###
 
 #create table 1
-# need to decide title/caption, what we're doing with NAs "unknowns"
+#need to decide title/caption, what we're doing with NAs "unknowns"
 table1 <- brfss20 %>%
   select(suicide_f, sex_f, age_group, raceth_f,
          acepunch_f, acehurt_f, aceswear_f) %>%
