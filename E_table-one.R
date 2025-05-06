@@ -4,6 +4,8 @@
 
 
 ### ---- SETUP & DATA IMPORT ---- ###
+library(tidyverse)
+library(haven)
 library(gtsummary)
 library(gt)
 
@@ -76,19 +78,3 @@ table1
 
 ### ---- CREATE OUR UPDATED TABLE 1 ---- ###
 
-(Table2 <- brfss20 %>%
-  select(suicide_f, sex_f, age_group, raceth_f,
-         acepunch_f, acehurt_f, aceswear_f) %>%
-  tbl_summary(
-    by = acepunch_f, acehurt_f, aceswear_f,
-    missing = "ifany",
-    missing_text = "Missing",
-    percent = "column",
-    label = list(
-      suicide_f ~ "Active Suicidal Ideation",
-      sex_f ~ "Sex",
-      age_group ~ "Age (years)",
-      raceth_f ~ "Race/Ethnicity", 
-    )
-  )
-  )
