@@ -12,8 +12,7 @@ rm(list = ls())
 library(tidyverse)
 library(reactable)
 library(haven)
-library(gtsummary)
-library(gt)
+
 
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
