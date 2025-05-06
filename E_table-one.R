@@ -1,12 +1,17 @@
-# TITLE: WA BRFSS 2020 - Exploratory Analysis 
-# Last Edited: 04-29-25
-# Description: In this script, we will conduct exploratory analysis and 
-# create a Table 1. 
+# TITLE: WA BRFSS 2020 - Table 1 
+# Last Edited: 04-06-25
+# Description: In this script, we will create a Table 1. 
 
 
 ### ---- SETUP & DATA IMPORT ---- ###
 library(gtsummary)
 library(gt)
+
+
+#importing dataset
+brfss20 <- read_dta("brfss_2020.dta")
+View(brfss20)
+
 
 ### ---- CREATE OUR TABLE 1 ---- ###
 
@@ -69,3 +74,21 @@ table1 <- brfss20 %>%
 table1
 
 
+### ---- CREATE OUR UPDATED TABLE 1 ---- ###
+
+(Table2 <- brfss20 %>%
+  select(suicide_f, sex_f, age_group, raceth_f,
+         acepunch_f, acehurt_f, aceswear_f) %>%
+  tbl_summary(
+    by = acepunch_f, acehurt_f, aceswear_f,
+    missing = "ifany",
+    missing_text = "Missing",
+    percent = "column",
+    label = list(
+      suicide_f ~ "Active Suicidal Ideation",
+      sex_f ~ "Sex",
+      age_group ~ "Age (years)",
+      raceth_f ~ "Race/Ethnicity", 
+    )
+  )
+  )

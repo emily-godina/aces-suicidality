@@ -12,10 +12,15 @@ rm(list = ls())
 library(tidyverse)
 library(reactable)
 library(haven)
+<<<<<<< HEAD
 library(gtsummary)
 library(gt)
 library(tableone)
 library(knitr)
+=======
+
+
+>>>>>>> b3d998603fb95c56807315ef241e83aad08866dd
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
 View(brfss20)
