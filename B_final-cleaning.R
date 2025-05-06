@@ -14,7 +14,8 @@ library(reactable)
 library(haven)
 library(gtsummary)
 library(gt)
-
+library(tableone)
+library(knitr)
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
 View(brfss20)
@@ -80,7 +81,7 @@ brfss20 <- brfss20 %>%
       "White, NH", "Black, NH", "Asian, NH", "AI/AN, NH", "Other race, NH", "Hispanic"))
   )
 
-view(brfss20)
+View(brfss20)
 
 
 ### ---- RECODE VARIABLES ---- ###
@@ -139,5 +140,20 @@ table1 <- brfss20 %>%
 
 #view table1
 table1
-
 nrow(brfss20)
+
+#playing around with CreateTableOne
+
+table1test <- CreateTableOne(
+  vars = c('sex_f', "age_group", "raceth_f", "acepunch_f", "acehurt_f", "aceswear_f"),
+  data = brfss20,
+  strata = "suicide_f",
+  includeNA = TRUE,
+  test = FALSE
+)
+
+View(table1test)
+
+print(table1test, showAllLevels = TRUE)%>%
+  kable()
+
