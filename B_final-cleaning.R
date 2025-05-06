@@ -1,5 +1,5 @@
-# TITLE: WA BRFSS 2020 - Data Cleaning 2
-# Last Edited: 05-1-2025
+# TITLE: WA BRFSS 2020 - Final Data Cleaning
+# Last Edited: 05-6-2025
 # Description: In this script, we will clean and recode our dataset.
 
 
@@ -81,8 +81,11 @@ brfss20 <- brfss20 %>%
       "White, NH", "Black, NH", "Asian, NH", "AI/AN, NH", "Other race, NH", "Hispanic"))
   )
 
+<<<<<<< HEAD
 View(brfss20)
 
+=======
+>>>>>>> 93b234f548d4a4f1826357dedf786cce12f226b2
 
 ### ---- RECODE VARIABLES ---- ###
 
@@ -98,10 +101,19 @@ brfss20 <- brfss20 %>%
 #label factor ace variables
 brfss20 <- brfss20 %>%
   mutate(
-    acepunch_f = factor(acepunch2, levels = c(0, 1), labels = c("No", "Yes")),   #household violence
-    acehurt_f  = factor(acehurt2,  levels = c(0, 1), labels = c("No", "Yes")),   #physical abuse
-    aceswear_f = factor(aceswear2, levels = c(0, 1), labels = c("No", "Yes"))    #verbal abuse
+    acepunch_f = factor(acepunch2, levels = c(1, 0), labels = c("Yes", "No")),   #household violence
+    acehurt_f  = factor(acehurt2,  levels = c(1, 0), labels = c("Yes", "No")),   #physical abuse
+    aceswear_f = factor(aceswear2, levels = c(1, 0), labels = c("Yes", "No"))    #verbal abuse
   )
+
+
+#label all NAs as "Missing"
+brfss20 <- brfss20 %>%
+  mutate(
+    across(c(sex_f, age_group, raceth_f,
+    ), ~ fct_explicit_na(.x, na_level = "Missing")),  
+    across(c(acepunch_f, acehurt_f, aceswear_f,
+    ), ~ fct_explicit_na(.x, na_level = "Don't Know/Refused")))
 
 
 #recode and label suicide variable
@@ -113,12 +125,14 @@ brfss20 <- brfss20 %>%
       suicide %in% c(7, 9) ~ NA_real_,
       TRUE ~ NA_real_
     ),
-    suicide_f = factor(suicide, levels = c(0, 1), labels = c("No", "Yes"))
+    suicide_f = factor(suicide, levels = c(1, 0), labels = c("Yes", "No"))
   )
 
+### ---- EXPORTING NEW DATASET ---- ###
 
-### ---- CREATE OUR TABLE 1 ---- ###
+write_dta(brfss20, "brfss_2020.dta")
 
+<<<<<<< HEAD
 #create table 1
 #need to decide title/caption, what we're doing with NAs "unknowns"
 table1 <- brfss20 %>%
@@ -157,3 +171,5 @@ View(table1test)
 print(table1test, showAllLevels = TRUE)%>%
   kable()
 
+=======
+>>>>>>> 93b234f548d4a4f1826357dedf786cce12f226b2
