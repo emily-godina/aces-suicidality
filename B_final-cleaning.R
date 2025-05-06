@@ -12,15 +12,7 @@ rm(list = ls())
 library(tidyverse)
 library(reactable)
 library(haven)
-<<<<<<< HEAD
-library(gtsummary)
-library(gt)
-library(tableone)
-library(knitr)
-=======
 
-
->>>>>>> b3d998603fb95c56807315ef241e83aad08866dd
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
 View(brfss20)
@@ -86,11 +78,6 @@ brfss20 <- brfss20 %>%
       "White, NH", "Black, NH", "Asian, NH", "AI/AN, NH", "Other race, NH", "Hispanic"))
   )
 
-<<<<<<< HEAD
-View(brfss20)
-
-=======
->>>>>>> 93b234f548d4a4f1826357dedf786cce12f226b2
 
 ### ---- RECODE VARIABLES ---- ###
 
@@ -136,45 +123,3 @@ brfss20 <- brfss20 %>%
 ### ---- EXPORTING NEW DATASET ---- ###
 
 write_dta(brfss20, "brfss_2020.dta")
-
-<<<<<<< HEAD
-#create table 1
-#need to decide title/caption, what we're doing with NAs "unknowns"
-table1 <- brfss20 %>%
-  select(suicide_f, sex_f, age_group, raceth_f,
-         acepunch_f, acehurt_f, aceswear_f) %>%
-  tbl_summary(
-    by = suicide_f,
-    missing = "ifany",
-    percent = "column",
-    label = list(
-      sex_f ~ "Sex",
-      age_group ~ "Age (years)",
-      raceth_f ~ "Race/Ethnicity", #need to decide how we're doing this
-      acepunch_f ~ "Witnessed Household Violence (Hit/Hurt)",
-      acehurt_f ~ "Physical Abuse (Hit/Hurt)",
-      aceswear_f ~ "Verbal Abuse (Sworn/Insulted)"
-    )
-  )
-
-#view table1
-table1
-nrow(brfss20)
-
-#playing around with CreateTableOne
-
-table1test <- CreateTableOne(
-  vars = c('sex_f', "age_group", "raceth_f", "acepunch_f", "acehurt_f", "aceswear_f"),
-  data = brfss20,
-  strata = "suicide_f",
-  includeNA = TRUE,
-  test = FALSE
-)
-
-View(table1test)
-
-print(table1test, showAllLevels = TRUE)%>%
-  kable()
-
-=======
->>>>>>> 93b234f548d4a4f1826357dedf786cce12f226b2
