@@ -25,15 +25,17 @@ library(haven)
 
 #subsetting only desired variables
 brfss20 <- dplyr::select(brfss20,
-              #adverse childhood experiences
-              acedeprs2, acedrink, acedrugs, aceprisn, acedivrc, acepunch2, 
-              acehurt2, aceswear2, acetouch2, acethem2, acehvsx2, 
-              acescor1, acescor2, aceindx2,
-              #potential covariates to consider
+              #adverse childhood experiences not using
+                acedeprs2, acedrink, acedrugs, aceprisn, acedivrc, acetouch2, 
+                acethem2, acehvsx2, acescor1, acescor2, aceindx2,
+              #adverse childhood experiences exposures
+              acepunch2, acehurt2, aceswear2,
+              #potential covariates to consider and demographics
               sex, age,
               "_prace1","_mrace1", "_m_race", hispanc3, "_hispanc",
               misnervs, mishopls, misrstls, misdeprd, miseffrt, miswtles,  
-              mistmnt, mi_score, smi,
+              mistmnt, menthlth, "_ment14d",
+              marital_wa, employ1, physhlth, "_phys14d", poorhlth, sleptim1,
               #outcome of interest
               suicide,
               #potential weighted variables to use
@@ -108,7 +110,7 @@ exp_out <- dplyr::select(brfss20,
       # Yes = 212 
       # No = 8127
       # Don't Know = 3
-      # Refused = 22
+      # Refused = 23
 
 # NO ACES OF INTEREST
   table((exp_out$acehurt2 == 2 & exp_out$acepunch2 == 2 & exp_out$aceswear2 == 2))
