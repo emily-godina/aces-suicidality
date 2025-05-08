@@ -1,6 +1,6 @@
 
 # TITLE: WA BRFSS 2020 - Basic Data Cleaning 
-# Last Edited: 04-27-25
+# Last Edited: 05-07-25
 # Description: In this script, we will create a subset of our variables of 
       # interest to use for our future data manipulation and data analysis.
 

@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Final Data Cleaning
-# Last Edited: 05-6-2025
+# Last Edited: 05-07-2025
 # Description: In this script, we will clean and recode our dataset.
 
 
@@ -14,9 +14,10 @@ library(reactable)
 library(haven)
 
 #importing dataset
-brfss20 <- read_dta("brfss_2020.dta")
-View(brfss20)
+(brfss20 <- read_dta("brfss_2020.dta"))
 
+#viewing all variable names, alphabetically
+(brfss20_var <- sort(colnames(brfss20)))
 
 
 ### ---- DATA CLEANING ---- ###
@@ -24,7 +25,7 @@ View(brfss20)
 #remove all mental health k6 items
 brfss20 <- brfss20 %>%
   select(-misnervs, -mishopls, -misrstls, -misdeprd, -miseffrt, -miswtles, 
-         -mistmnt, -mi_score, -smi)
+         -mistmnt)
 
 #remove unused ace variables
 brfss20 <- brfss20 %>%
@@ -77,6 +78,16 @@ brfss20 <- brfss20 %>%
     raceth_f = factor(raceth_f, levels = c(
       "White, NH", "Black, NH", "Asian, NH", "AI/AN, NH", "Other race, NH", "Hispanic"))
   )
+
+(brfss20$marital_wa)
+
+(brfss20$employ1)
+
+(brfss20$physhlth)
+
+#sleep
+(brfss20$sleptim1)
+
 
 
 ### ---- RECODE VARIABLES ---- ###
