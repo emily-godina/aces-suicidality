@@ -39,7 +39,7 @@ names(brfss20) <- sub("^_", "", names(brfss20))
 
 ### ---- CREATE FACTOR VARIABLES ---- ###
 
-#categorize age into 8 bins
+#creating new factored age variable with 8 bins
 brfss20 <- brfss20 %>%
   mutate(age_group = case_when(
     age >= 18 & age <= 24 ~ "18-24",
@@ -57,13 +57,13 @@ brfss20 <- brfss20 %>%
                                                   "75-84", "85+")))
 
 
-#label sex
+#creating new factored sex variable 
 brfss20 <- brfss20 %>%
   mutate(sex_f = factor(sex, levels = c(1, 2), labels = c("Male", "Female")))
 
 
 
-#condense and label race/ethnicity
+#creating new factored race/ethnicity variable
 brfss20 <- brfss20 %>%
   mutate(
     raceth_f = case_when(
@@ -79,14 +79,71 @@ brfss20 <- brfss20 %>%
       "White, NH", "Black, NH", "Asian, NH", "AI/AN, NH", "Other race, NH", "Hispanic"))
   )
 
-(brfss20$marital_wa)
+#creating new factored marital status variable
+brfss20 <- brfss20 %>%
+  mutate(
+    marital_f = case_when(
+        marital_wa == 1 ~ "Married",
+        marital_wa == 2 ~ "Divorced",
+        marital_wa == 3 ~ "Widowed",
+        marital_wa == 4 ~ "Seperated",
+        marital_wa == 5 ~ "Never Married",
+        marital_wa == 6 ~ "Unmarried Couple",
+        marital_wa == 8 ~ "Domestic Partnership",
+        TRUE ~ NA_character_
+    ),
+    marital_f = factor(marital_f, levels = c(
+      "Married", "Domestic Partnership", "Unmarried Couple", "Never Married",
+      "Seperated","Divorced", "Widowed"
+      ))
+)
+  
+#creating new factored variable for employment
+brfss20 <- brfss20 %>%
+  mutate(
+    employ_f = case_when(
+      employ1 == 1 ~ "Employed",
+      employ1 == 2 ~ "Self-Employed",
+      employ1 == 3 ~ "1+ Years Out of Work",
+      employ1 == 4 ~ "<1 Year Out of Work",
+      employ1 == 5 ~ "Homemaker",
+      employ1 == 6 ~ "Student",
+      employ1 == 7 ~ "Retired",
+      employ1 == 8 ~ "Unable to Work",
+      employ1 == 9 ~ "Refused",
+      TRUE ~ NA_character_
+    ),
+    employ_f = factor(employ_f, levels = c(
+      "Student", "Employed", "Self-Employed", "Homemaker", "Retired",
+      "1+ Years Out of Work", "<1 Year Out of Work", "Unable to Work", "Refused"))
+)
 
-(brfss20$employ1)
+#creating new factored variable for physical health
+brfss20 <- brfss20 %>%
+  mutate(
+    physhlth_f = case_when(
+      physhlth == 88 ~ "None",
+      physhlth >= 1 & physhlth <= 10 ~ "1-10 Days",
+      physhlth >= 11 & physhlth <= 20 ~ "11-20 Days",
+      physhlth >= 21 & physhlth <= 30 ~ "21-30 Days",
+      TRUE ~ NA_character_
+    ),
+    physhlth_f = factor(physhlth_f, levels = c(
+      "None", "1-10 Days", "11-20 Days", "21-30 Days"))
+)
 
-(brfss20$physhlth)
-
-#sleep
-(brfss20$sleptim1)
+#creating new factored variable for sleep
+brfss20 <- brfss20 %>%
+  mutate(
+    sleep_f = case_when(
+      sleptim1 >= 1 & sleptim1 <= 6 ~ "Insufficient Sleep",
+      sleptim1 >= 7 & sleptim1 <= 9 ~ "Sufficient Sleep",
+      sleptim1 >= 10 & sleptim1 <= 18 ~ "Excessive Sleep",
+      TRUE ~ NA_character_
+    ),
+    sleep_f = factor(sleep_f, levels = c(
+      "Insufficient Sleep", "Sufficient Sleep", "Excessive Sleep"))
+  )
 
 
 
