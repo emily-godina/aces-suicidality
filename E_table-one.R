@@ -12,7 +12,9 @@ library(gt)
 
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
-View(brfss20)
+brfss20 <- brfss20 %>%
+  mutate(across(where(is.labelled), as_factor))
+
 
 
 ### ---- CREATE OUR TABLE 1 ---- ###
@@ -21,15 +23,20 @@ View(brfss20)
 #need to decide title/caption, what we're doing with NAs "unknowns"
 table1 <- brfss20 %>%
   select(suicide_f, sex_f, age_group, raceth_f,
+         marital_f, employ_f, physhlth_f, sleep_f,
          acepunch_f, acehurt_f, aceswear_f) %>%
   tbl_summary(
     by = suicide_f,
-    missing = "ifany",
-    missing_text = "Missing",
+    missing = "no",
+    #missing_text = "Missing",
     percent = "column",
     label = list(
       sex_f ~ "Sex",
       age_group ~ "Age (years)",
+      marital_f ~ "Marital Status",
+      employ_f ~ "Employment Status",
+      physhlth_f ~ "Poor Physical Health",
+      sleep_f ~ "Average Sleep",
       raceth_f ~ "Race/Ethnicity", 
       acepunch_f ~ "Witnessed Household Violence (Hit/Hurt)",
       acehurt_f ~ "Physical Abuse (Hit/Hurt)",
