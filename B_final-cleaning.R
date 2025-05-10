@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Final Data Cleaning
-# Last Edited: 05-07-2025
+# Last Edited: 05-09-2025
 # Description: In this script, we will clean and recode our dataset.
 
 
@@ -159,12 +159,12 @@ brfss20 <- brfss20 %>%
 
 
 #label factor ace variables
-brfss20 <- brfss20 %>%
-  mutate(
-    acepunch_f = factor(acepunch2, levels = c(1, 0), labels = c("Yes", "No")),   #household violence
-    acehurt_f  = factor(acehurt2,  levels = c(1, 0), labels = c("Yes", "No")),   #physical abuse
-    aceswear_f = factor(aceswear2, levels = c(1, 0), labels = c("Yes", "No"))    #verbal abuse
-  )
+#brfss20 <- brfss20 %>%
+  #mutate(
+    #acepunch_f = factor(acepunch2, levels = c(1, 0), labels = c("Yes", "No")),   #household violence
+    #acehurt_f  = factor(acehurt2,  levels = c(1, 0), labels = c("Yes", "No")),   #physical abuse
+    #aceswear_f = factor(aceswear2, levels = c(1, 0), labels = c("Yes", "No"))    #verbal abuse
+  #)
 
 
 #label all NAs as "Missing"
@@ -172,8 +172,9 @@ brfss20 <- brfss20 %>%
   mutate(
     across(c(sex_f, age_group, raceth_f,
     ), ~ fct_explicit_na(.x, na_level = "Missing")),  
-    across(c(acepunch_f, acehurt_f, aceswear_f,
-    ), ~ fct_explicit_na(.x, na_level = "Don't Know/Refused")))
+   #across(c(acepunch_f, acehurt_f, aceswear_f,
+   #), ~ fct_explicit_na(.x, na_level = "Don't Know/Refused"))
+   )
 
 
 #recode and label suicide variable
@@ -187,6 +188,32 @@ brfss20 <- brfss20 %>%
     ),
     suicide_f = factor(suicide, levels = c(1, 0), labels = c("Yes", "No"))
   )
+
+### ---- CREATING NEW EXPOSURE VARIABLE ---- ###
+
+#creating new variable that sums the aces
+brfss20 <- brfss20 %>%
+  mutate(
+    aces_sum = rowSums(across(c(acepunch2, acehurt2, aceswear2)), na.rm = FALSE),
+    aces_na = rowSums(is.na(across(c(acepunch2, acehurt2, aceswear2))))
+    )
+
+#checking quantities 
+table(brfss20$aces_sum)
+sum(is.na(brfss20$aces_sum))
+    # 0 ACEs = 4260
+    # 1 ACEs = 1998
+    # 2 ACEs = 1079
+    # 3 ACEs = 769
+    # 1+ NAs = 259
+
+#more information for the 259 with at least one NA
+table(brfss20$aces_na)
+    # Don't Know/Refused to 1 ACE = 166
+    # Don't Know/Refused to 2 ACEs = 28
+    # Don't Know/Refused to 3 ACEs = 65
+    
+
 
 ### ---- EXPORTING NEW DATASET ---- ###
 
