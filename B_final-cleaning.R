@@ -110,26 +110,25 @@ brfss20 <- brfss20 %>%
       employ1 == 6 ~ "Student",
       employ1 == 7 ~ "Retired",
       employ1 == 8 ~ "Unable to Work",
-      employ1 == 9 ~ "Refused",
       TRUE ~ NA_character_
     ),
     employ_f = factor(employ_f, levels = c(
       "Student", "Employed", "Self-Employed", "Homemaker", "Retired",
-      "1+ Years Out of Work", "<1 Year Out of Work", "Unable to Work", "Refused"))
+      "1+ Years Out of Work", "<1 Year Out of Work", "Unable to Work"))
 )
 
 #creating new factored variable for physical health
 brfss20 <- brfss20 %>%
   mutate(
     physhlth_f = case_when(
-      physhlth == 88 ~ "None",
+      physhlth == 88 ~ "0 Days",
       physhlth >= 1 & physhlth <= 10 ~ "1-10 Days",
       physhlth >= 11 & physhlth <= 20 ~ "11-20 Days",
       physhlth >= 21 & physhlth <= 30 ~ "21-30 Days",
       TRUE ~ NA_character_
     ),
     physhlth_f = factor(physhlth_f, levels = c(
-      "None", "1-10 Days", "11-20 Days", "21-30 Days"))
+      "0 Days", "1-10 Days", "11-20 Days", "21-30 Days"))
 )
 
 #creating new factored variable for sleep
@@ -145,6 +144,14 @@ brfss20 <- brfss20 %>%
       "Insufficient Sleep", "Sufficient Sleep", "Excessive Sleep"))
   )
 
+#creating new factored variable for suicidal ideation
+brfss20 <- brfss20 %>%
+  mutate(
+    suicide_f = case_when(
+      suicide == 1 ~ "Yes",
+      suicide == 2 ~ "No",
+      TRUE ~ NA_character_
+    ))
 
 
 ### ---- RECODE VARIABLES ---- ###
@@ -167,27 +174,6 @@ brfss20 <- brfss20 %>%
   #)
 
 
-#label all NAs as "Missing"
-brfss20 <- brfss20 %>%
-  mutate(
-    across(c(sex_f, age_group, raceth_f,
-    ), ~ fct_explicit_na(.x, na_level = "Missing")),  
-   #across(c(acepunch_f, acehurt_f, aceswear_f,
-   #), ~ fct_explicit_na(.x, na_level = "Don't Know/Refused"))
-   )
-
-
-#recode and label suicide variable
-brfss20 <- brfss20 %>%
-  mutate(
-    suicide = case_when(
-      suicide == 1 ~ 1,
-      suicide == 2 ~ 0,
-      suicide %in% c(7, 9) ~ NA_real_,
-      TRUE ~ NA_real_
-    ),
-    suicide_f = factor(suicide, levels = c(1, 0), labels = c("Yes", "No"))
-  )
 
 ### ---- CREATING NEW EXPOSURE VARIABLE ---- ###
 
@@ -195,7 +181,8 @@ brfss20 <- brfss20 %>%
 brfss20 <- brfss20 %>%
   mutate(
     aces_sum = rowSums(across(c(acepunch2, acehurt2, aceswear2)), na.rm = FALSE),
-    aces_na = rowSums(is.na(across(c(acepunch2, acehurt2, aceswear2))))
+    aces_na = rowSums(is.na(across(c(acepunch2, acehurt2, aceswear2)))),
+    aces_f = factor(aces_sum, levels = c(0, 1, 2, 3), labels = c("No ACEs", "1 ACE", "2 ACEs", "3 ACEs"))
     )
 
 #checking quantities 
