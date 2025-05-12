@@ -51,13 +51,13 @@ summary(adj.table)
 #Find OR
 exp(coef(adj.table))                
 
-#Key findings from this
-#           Folks with 1 ACE showed 4.13 times the odds
+#Key findings from this (recall reference group is first coded)
+#           Folks with 1 ACE showed 4.13 times the odds (compared to 0 ACE)
 #           Folks with 3 ACE showed 8.88 times the odds!
-#           OR decrease with age until 85+
-#           AI/AN and Other race higher odds
-#           Domestic partnership and never married, and widowed higher odds
-#           Over one year out of work and unable to work higher odds
-#           Confusing physical health predictor, but all are higher odds
+#           OR decrease with age (meaning 18-24 age group highest odds)
+#           AI/AN and Other race higher odds (compared to white)
+#           Domestic partnership and never married, and widowed higher odds (compared to married)
+#           Over one year out of work and unable to work higher odds (compared to student)
+#           Confusing physical health predictor, but all are higher odds (compared to zero poor health days)
 
 summary(adj.table)
