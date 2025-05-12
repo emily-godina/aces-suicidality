@@ -33,7 +33,7 @@ table1 <- brfss20 %>%
       marital_f ~ "Marital Status",
       employ_f ~ "Employment Status",
       physhlth_f ~ "Poor Physical Health",
-      sleep_f ~ "Average Sleep",
+      sleep_f ~ "Average Sleep Duration",
       raceth_f ~ "Race/Ethnicity"
     ),
     type = list(suicide_f ~ "categorical")
