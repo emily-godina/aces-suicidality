@@ -13,14 +13,12 @@ library(dplyr)
 
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
-
 brfss20 <- brfss20 %>%
   mutate(across(where(is.labelled), as_factor)) 
 
 #clean up data to remove individuals who did not answer our categories
 brfss20 <- brfss20 %>%
   filter(!is.na(suicide_f), !is.na(aces_f))
-
 brfss20 <- brfss20 %>%
   filter(suicide_f != "")         # there were some individuals w/o category?
 
@@ -38,7 +36,7 @@ chisq.test(unadj.table)
 #     Pearson's Chi-squared test
 #     data:  unadj.table
 #     X-squared = 208.51, df = 3, p-value < 2.2e-16
-#Large association shown with unadjusted analysis 
+ 
 
 
 ####---- TABLE DATA (adjusted) -----#####
@@ -63,6 +61,34 @@ exp(coef(adj.table))
 summary(adj.table)
 
 
-####---- TABLE CREATION ----####
+####---- TABLE 2 CREATION ----####
 
-table2 <- 
+table2 <- tbl_regression(
+  adj.table,
+  exponentiate = TRUE, 
+  label = list(
+    aces_f = "Adverse Childhood Experiences",
+    age_group = "Age Group",
+    raceth_f = "Race/Ethnicity",
+    marital_f = "Marital Status",
+    employ_f = "Employment",
+    physhlth_f = "Days of Poor Physical Health",
+    sleep_f = "Sleep Duration"
+  )
+) %>%
+  add_global_p() %>%        
+  bold_labels() %>%
+  modify_caption("**Table 2. Adjusted Associations between Suicidal Ideation by ACEs and Covariates**") %>%
+  as_gt() %>%
+  cols_width(
+    OR ~ px(250)
+  )
+
+
+
+#view table 2
+table2
+
+
+
+  
