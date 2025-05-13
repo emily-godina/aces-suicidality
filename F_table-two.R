@@ -41,7 +41,7 @@ chisq.test(unadj.table)
 #Large association shown with unadjusted analysis 
 
 
-####---- TABLE (adjusted) -----#####
+####---- TABLE DATA (adjusted) -----#####
 
 #Note: is it only possible to do this with logistic regression?
 adj.table <- glm(suicide_f ~ aces_f + age_group + raceth_f + marital_f + 
@@ -61,3 +61,8 @@ exp(coef(adj.table))
 #           Confusing physical health predictor, but all are higher odds (compared to zero poor health days)
 
 summary(adj.table)
+
+
+####---- TABLE CREATION ----####
+
+table2 <- 
