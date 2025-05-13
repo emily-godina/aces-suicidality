@@ -135,8 +135,8 @@ brfss20 <- brfss20 %>%
 brfss20 <- brfss20 %>%
   mutate(
     sleep_f = case_when(
-      sleptim1 >= 1 & sleptim1 <= 6 ~ "Insufficient Sleep",
       sleptim1 >= 7 & sleptim1 <= 9 ~ "Sufficient Sleep",
+      sleptim1 >= 1 & sleptim1 <= 6 ~ "Insufficient Sleep",
       sleptim1 >= 10 & sleptim1 <= 18 ~ "Excessive Sleep",
       TRUE ~ NA_character_
     ),
