@@ -53,7 +53,7 @@ exp(coef(adj.table))
 #           Folks with 1 ACE showed 4.13 times the odds (compared to 0 ACE)
 #           Folks with 3 ACE showed 8.88 times the odds!
 #           OR decrease with age (meaning 18-24 age group highest odds)
-#           AI/AN and Other race higher odds (compared to white)
+#           AI/AN and Other race higher odds (compared to white, but not stat significant)
 #           Domestic partnership and never married, and widowed higher odds (compared to married)
 #           Over one year out of work and unable to work higher odds (compared to student)
 #           Confusing physical health predictor, but all are higher odds (compared to zero poor health days)
@@ -61,7 +61,7 @@ exp(coef(adj.table))
 summary(adj.table)
 
 
-####---- TABLE 2 CREATION ----####
+####---- TABLE 2 CREATION (LOG REGRESSION) ----####
 
 table2 <- tbl_regression(
   adj.table,
@@ -72,7 +72,7 @@ table2 <- tbl_regression(
     raceth_f = "Race/Ethnicity",
     marital_f = "Marital Status",
     employ_f = "Employment",
-    physhlth_f = "Days of Poor Physical Health",
+    physhlth_f = "Days of Poor Physical Health", 
     sleep_f = "Sleep Duration"
   )
 ) %>%
@@ -89,6 +89,35 @@ table2 <- tbl_regression(
 #view table 2
 table2
 
+########################################
+
+####-----CREATING TABLE 2 w/ EPI.2BY2-------#######
 
 
-  
+#recode ACE factors into binaries (0 ACEs vs any ACE)
+
+brfss20 <- brfss20 %>% mutate(
+  aces_bin = case_when(
+    aces_f %in% c("1 ACE", "2 ACEs", "3 ACEs") ~ 1,
+    aces_f == "No ACEs" ~ 0,
+    TRUE ~ NA_real_
+  )
+)
+#Run unadjusted analysis
+
+first.2by2 <- with(brfss20, table(aces_bin, suicide_f))
+first.2by2.output <- epi.2by2(first.2by2, method = 'cross.sectional')                   
+first.2by2.output
+
+#Run adjusted analysis (adjust for sex and race)
+second.2by2 <- xtabs(~ aces_bin + suicide_f + sex_f + raceth_f, data = brfss20)
+second.array <- array(second.2by2,
+                     dim = c(2, 2, 6),
+                     dimnames = list(
+                       suicide_f = c('Yes', 'No'),
+                       sex_f = c('Male', 'Female'),
+                       raceth_f = c('White, NH', 'Black, NH', 'Asian, NH', 
+                                    'AI/AN, NH', 'Other race, NH', 'Hispanic')))
+
+second.output <- epi.2by2(dat = second.array, method = 'cross.sectional')
+second.output
