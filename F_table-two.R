@@ -98,11 +98,17 @@ table2
 
 brfss20 <- brfss20 %>% mutate(
   aces_bin = case_when(
-    aces_f %in% c("1 ACE", "2 ACEs", "3 ACEs") ~ 1,
-    aces_f == "No ACEs" ~ 0,
+    aces_f %in% c("1 ACE", "2 ACEs", "3 ACEs") ~ 2,
+    aces_f == "No ACEs" ~ 1,
     TRUE ~ NA_real_
   )
 )
+
+# Run 10% test to assess for confounding vs effect modification
+
+
+
+
 #Run unadjusted analysis
 
 first.2by2 <- with(brfss20, table(aces_bin, suicide_f))
