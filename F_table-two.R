@@ -116,7 +116,7 @@ epi.2by2(one_ace2x2, method = 'cross.sectional')
   #prevalence ratio = 8.07 (95% CI: 5.32, 12.23)
 
 
-####-----STRATIFIED ANALYSIS-------#######
+####-------STRATIFIED ANALYSIS-------#######
 
 #effect modification, stratified analysis for sex
 strat_f <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = sex_f == "Female")
@@ -134,8 +134,10 @@ array_m <- array(strat_m,
                       outcomes = c('Suicidal Ideation', 'No Suicidal Ideation'))) 
 
 #running epi.2by2 analysis
-epi.2by2(array_f, method = 'cross.sectional')
-epi.2by2(array_m, method = 'cross.sectional')
+epi.2by2(array_f, method = 'cross.sectional') #females
+  #prevalence ratio = 11.38 (95% CI: 5.77, 22.44)
+epi.2by2(array_m, method = 'cross.sectional') #males
+ #prevalence ratio = 6.22 (95% CI: 3.65, 10.59)
 
 
 
