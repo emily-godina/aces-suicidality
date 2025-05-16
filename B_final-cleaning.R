@@ -150,7 +150,7 @@ brfss20 <- brfss20 %>%
   mutate(
     suicide_f = case_when(
       suicide == 1 ~ "Yes",
-      suicide == 0 ~ "No",
+      suicide == 2 ~ "No",
       TRUE ~ NA_character_
     ))
 
@@ -162,7 +162,8 @@ brfss20 <- brfss20 %>%
   mutate(
     acepunch2 = ifelse(acepunch2 %in% c(7, 9), NA, ifelse(acepunch2 == 1, 1, 0)), #household violence
     acehurt2  = ifelse(acehurt2 %in% c(7, 9), NA, ifelse(acehurt2 == 1, 1, 0)),   #physical abuse
-    aceswear2 = ifelse(aceswear2 %in% c(7, 9), NA, ifelse(aceswear2 == 1, 1, 0))  #verbal abuse
+    aceswear2 = ifelse(aceswear2 %in% c(7, 9), NA, ifelse(aceswear2 == 1, 1, 0)),  #verbal abuse
+    suicide = ifelse(suicide %in% c(7, 9), NA, ifelse(suicide == 1, 1, 0))  #suicide
   )
 
 
@@ -191,6 +192,7 @@ recoding <- function(data, var) {
 
 #calling the function
 brfss20 <- recoding(brfss20, c("ace_atleast1", "suicide"))
+
 
 
 ### ---- CREATING NEW EXPOSURE VARIABLE ---- ###
