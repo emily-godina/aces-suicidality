@@ -1,6 +1,6 @@
 
 # TITLE: WA BRFSS 2020 - Basic Data Cleaning 
-# Last Edited: 05-07-25
+# Last Edited: 05-16-25
 # Description: In this script, we will create a subset of our variables of 
       # interest to use for our future data manipulation and data analysis.
 
@@ -26,8 +26,8 @@ library(haven)
 #subsetting only desired variables
 brfss20 <- dplyr::select(brfss20,
               #adverse childhood experiences not using
-                acedeprs2, acedrink, acedrugs, aceprisn, acedivrc, acetouch2, 
-                acethem2, acehvsx2, acescor1, acescor2, aceindx2,
+              acedeprs2, acedrink, acedrugs, aceprisn, acedivrc, acetouch2, 
+              acethem2, acehvsx2, acescor1, acescor2, aceindx2,
               #adverse childhood experiences exposures
               acepunch2, acehurt2, aceswear2,
               #potential covariates to consider and demographics
