@@ -108,17 +108,34 @@ table2
 
 ####-----CREATING TABLE 2 w/ EPI.2BY2-------#######
 
-#Run unadjusted analysis for no aces and at least 1 ace
-(one_ace2x2 <- with(brfss20, 
-                   table(ace_atleast1_12, suicide_12)))
-(epi.2by2(one_ace2x2, method = 'cross.sectional')) 
+#running unadjusted analysis for no aces and at least 1 ace
+one_ace2x2 <- with(brfss20, 
+                   table(ace_atleast1_12, suicide_12))
+one_ace2x2
+epi.2by2(one_ace2x2, method = 'cross.sectional')
   #prevalence ratio = 8.07 (95% CI: 5.32, 12.23)
 
-  
-second.output <- epi.2by2(dat = second.array, method = 'cross.sectional')
-second.output
 
+####-----STRATIFIED ANALYSIS-------#######
 
+#effect modification, stratified analysis for sex
+strat_f <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = sex_f == "Female")
+strat_m <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = sex_f == "Male")
+
+#naming our margins 
+array_f <- array(strat_f,
+                 dim = c(2,2), 
+                 list(exposure = c('1+ ACEs', 'No ACEs'), 
+                      outcomes = c('Suicidal Ideation', 'No Suicidal Ideation'))) 
+
+array_m <- array(strat_m,
+                 dim = c(2,2), 
+                 list(exposure =c('1+ ACEs', 'No ACEs'), 
+                      outcomes = c('Suicidal Ideation', 'No Suicidal Ideation'))) 
+
+#running epi.2by2 analysis
+epi.2by2(array_f, method = 'cross.sectional')
+epi.2by2(array_m, method = 'cross.sectional')
 
 
 
