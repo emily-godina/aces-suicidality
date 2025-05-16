@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Table 2 
-# Last Edited: 05-12-25
+# Last Edited: 05-16-25
 # Description: In this script, we will create a Table 2. 
 
 
@@ -10,6 +10,7 @@ library(gtsummary)
 library(gt)
 library(labelled)
 library(dplyr)
+library(epiR)
 
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
@@ -19,12 +20,16 @@ brfss20 <- brfss20 %>%
 #clean up data to remove individuals who did not answer our categories
 brfss20 <- brfss20 %>%
   filter(!is.na(suicide_f), !is.na(aces_f))
-brfss20 <- brfss20 %>%
-  filter(suicide_f != "")         # there were some individuals w/o category?
+#brfss20 <- brfss20 %>%            # this line only leaves 207 people
+#  filter(suicide_f != "")         # there were some individuals w/o category?
+                                   # yah, weird bug but the only way i could create table1
 
 #recode suicide_f to binary factor variable
 brfss20$suicide_f <- factor(brfss20$suicide_f, levels = c("No", "Yes"))
 
+#checking # of observations
+table(brfss20$aces_f)
+table(brfss20$suicide_f)
 
 
 
@@ -37,6 +42,19 @@ chisq.test(unadj.table)
 #     data:  unadj.table
 #     X-squared = 208.51, df = 3, p-value < 2.2e-16
  
+#at least one ace chisq test
+unadj.table.atl1 <- with(brfss20, table(ace_atleast1, suicide_f), na.rm = TRUE)
+View(unadj.table.atl1)
+chisq.test(unadj.table.atl1)
+#     Pearson's Chi-squared test
+#     X-squared = 138.04, df = 1, p-value < 2.2e-16
+
+
+####----- RUN 10% TEST ASSESING COVARIATES-------#######
+
+# Run 10% test to assess for confounding vs effect modification
+
+
 
 
 ####---- TABLE DATA (adjusted) -----#####
@@ -84,46 +102,23 @@ table2 <- tbl_regression(
     OR ~ px(250)
   )
 
-
-
 #view table 2
 table2
 
-########################################
 
 ####-----CREATING TABLE 2 w/ EPI.2BY2-------#######
 
+#Run unadjusted analysis for no aces and at least 1 ace
+(one_ace2x2 <- with(brfss20, 
+                   table(ace_atleast1_12, suicide_12)))
+(epi.2by2(one_ace2x2, method = 'cross.sectional')) 
+  #prevalence ratio = 8.07 (95% CI: 5.32, 12.23)
 
-#recode ACE factors into binaries (0 ACEs vs any ACE)
-
-brfss20 <- brfss20 %>% mutate(
-  aces_bin = case_when(
-    aces_f %in% c("1 ACE", "2 ACEs", "3 ACEs") ~ 2,
-    aces_f == "No ACEs" ~ 1,
-    TRUE ~ NA_real_
-  )
-)
-
-# Run 10% test to assess for confounding vs effect modification
-
-
-
-
-#Run unadjusted analysis
-
-first.2by2 <- with(brfss20, table(aces_bin, suicide_f))
-first.2by2.output <- epi.2by2(first.2by2, method = 'cross.sectional')                   
-first.2by2.output
-
-#Run adjusted analysis (adjust for sex and race)
-second.2by2 <- xtabs(~ aces_bin + suicide_f + sex_f + raceth_f, data = brfss20)
-second.array <- array(second.2by2,
-                     dim = c(2, 2, 6),
-                     dimnames = list(
-                       suicide_f = c('Yes', 'No'),
-                       sex_f = c('Male', 'Female'),
-                       raceth_f = c('White, NH', 'Black, NH', 'Asian, NH', 
-                                    'AI/AN, NH', 'Other race, NH', 'Hispanic')))
-
+  
 second.output <- epi.2by2(dat = second.array, method = 'cross.sectional')
 second.output
+
+
+
+
+
