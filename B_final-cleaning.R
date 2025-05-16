@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Final Data Cleaning
-# Last Edited: 05-09-2025
+# Last Edited: 05-16-2025
 # Description: In this script, we will clean and recode our dataset.
 
 
@@ -144,12 +144,13 @@ brfss20 <- brfss20 %>%
       "Insufficient Sleep", "Sufficient Sleep", "Excessive Sleep"))
   )
 
+    
 #creating new factored variable for suicidal ideation
 brfss20 <- brfss20 %>%
   mutate(
     suicide_f = case_when(
       suicide == 1 ~ "Yes",
-      suicide == 2 ~ "No",
+      suicide == 0 ~ "No",
       TRUE ~ NA_character_
     ))
 
@@ -165,6 +166,11 @@ brfss20 <- brfss20 %>%
   )
 
 
+#new variable for at least 1 ace
+brfss20 <- brfss20 %>%
+  mutate(
+    ace_atleast1 = ifelse(acepunch2 == 1 | acehurt2 == 1 | aceswear2 == 1, 1, 0))
+    
 #label factor ace variables
 #brfss20 <- brfss20 %>%
   #mutate(
@@ -173,6 +179,18 @@ brfss20 <- brfss20 %>%
     #aceswear_f = factor(aceswear2, levels = c(1, 0), labels = c("Yes", "No"))    #verbal abuse
   #)
 
+#recoding all variables into 1(yes) and 2(no)
+#creating the function
+recoding <- function(data, var) {
+  data %>% 
+    mutate(across(
+        all_of(var),
+        ~ if_else(.x == 0, 2L, .x),
+        .names = "{.col}_12"))
+}
+
+#calling the function
+brfss20 <- recoding(brfss20, c("ace_atleast1", "suicide"))
 
 
 ### ---- CREATING NEW EXPOSURE VARIABLE ---- ###
@@ -182,7 +200,9 @@ brfss20 <- brfss20 %>%
   mutate(
     aces_sum = rowSums(across(c(acepunch2, acehurt2, aceswear2)), na.rm = FALSE),
     aces_na = rowSums(is.na(across(c(acepunch2, acehurt2, aceswear2)))),
-    aces_f = factor(aces_sum, levels = c(0, 1, 2, 3), labels = c("No ACEs", "1 ACE", "2 ACEs", "3 ACEs"))
+    aces_f = factor(aces_sum,
+                    levels = c(0, 1, 2, 3),
+                    labels = c("No ACEs", "1 ACE", "2 ACEs", "3 ACEs"))
     )
 
 #checking quantities 
