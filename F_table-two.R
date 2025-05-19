@@ -11,6 +11,7 @@ library(gt)
 library(labelled)
 library(dplyr)
 library(epiR)
+library(huxtable)
 
 #importing dataset
 brfss20 <- read_dta("brfss_2020.dta")
@@ -62,7 +63,7 @@ chisq.test(unadj.table.atl1)
 #Note: is it only possible to do this with logistic regression?
 adj.table <- glm(suicide_f ~ aces_f + age_group + raceth_f + marital_f + 
                    employ_f + physhlth_f + sleep_f, data = brfss20, family = binomial)
-summary(adj.table)
+#summary(adj.table)
 
 #Find OR
 exp(coef(adj.table))                
@@ -76,7 +77,7 @@ exp(coef(adj.table))
 #           Over one year out of work and unable to work higher odds (compared to student)
 #           Confusing physical health predictor, but all are higher odds (compared to zero poor health days)
 
-summary(adj.table)
+#summary(adj.table)
 
 
 ####---- TABLE 2 CREATION (LOG REGRESSION) ----####
@@ -112,7 +113,7 @@ table2
 one_ace2x2 <- with(brfss20, 
                    table(ace_atleast1_12, suicide_12))
 one_ace2x2
-epi.2by2(one_ace2x2, method = 'cross.sectional')
+PR <- epi.2by2(one_ace2x2, method = 'cross.sectional')
   #prevalence ratio = 8.07 (95% CI: 5.32, 12.23)
 
 
@@ -134,10 +135,108 @@ array_m <- array(strat_m,
                       outcomes = c('Suicidal Ideation', 'No Suicidal Ideation'))) 
 
 #running epi.2by2 analysis
-epi.2by2(array_f, method = 'cross.sectional') #females
+PR.f <- epi.2by2(array_f, method = 'cross.sectional') #females
   #prevalence ratio = 11.38 (95% CI: 5.77, 22.44)
-epi.2by2(array_m, method = 'cross.sectional') #males
+PR.m <- epi.2by2(array_m, method = 'cross.sectional') #males
  #prevalence ratio = 6.22 (95% CI: 3.65, 10.59)
 
 
+#effect modification, stratified analysis for race/ethnicity
+(table(brfss20$raceth_f, brfss20$suicide_f))
+#creating stratification
+strat_w1 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_wht == 1) #white
+strat_w2 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_wht == 2) #bipoc
+strat_b1 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_blk == 1) #black
+strat_as1 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_asn == 1) #asian
+strat_ai1 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_aian == 1) #ai/an
+strat_o1 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_oth == 1) #other
+strat_h1 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_hisp == 1) #hispanic
+
+#naming our margins and creating array
+make_array <- function(strat, out_name = deparse(substitute(strat))) {
+  arr <- array(strat,
+               dim = c(2, 2),
+               list(exposure = c("1+ ACEs", "No ACEs"),
+               outcomes = c("Suicidal Ideation", "No Suicidal Ideation")))
+  assign(sub("strat_", "array_", out_name), arr, envir = .GlobalEnv)
+}
+
+#continuity correction for 0 people were not exposed and experienced the outcome
+strat_b1 <- strat_b1 + 0.5
+strat_as1 <- strat_as1 + 0.5
+
+#running epi.2by2 analysis
+(PR.white <- epi.2by2(make_array(strat_w1), method = 'cross.sectional')) #white
+#prevalence ratio = 7.63 (95% CI: 4.72, 12.32)
+(PR.bipoc <- epi.2by2(make_array(strat_w2), method = 'cross.sectional')) #bipoc
+#prevalence ratio = 9.32 (95% CI: 3.72, 23.34)
+(PR.black <- epi.2by2(make_array(strat_b1), method = 'cross.sectional')) #black
+#prevalence ratio = 7.56 (95% CI: 0.43, 134.46) -- TOO LARGE CI
+(PR.asian <- epi.2by2(make_array(strat_as1), method = 'cross.sectional')) #asian
+#prevalence ratio = 4.43 (95% CI: 0.25, 77.92) -- TOO LARGE CI
+(PR.aian <- epi.2by2(make_array(strat_ai1), method = 'cross.sectional')) #ai/an
+#prevalence ratio = 6.96 (95% CI: 1.98, 24.52) 
+(PR.other <- epi.2by2(make_array(strat_o1), method = 'cross.sectional')) #other
+#prevalence ratio = 6.12 (95% CI: 0.76, 49.04) -- TOO LARGE CI
+(PR.hispanic <- epi.2by2(make_array(strat_h1), method = 'cross.sectional')) #hispanic
+#prevalence ratio = 17.22 (95% CI: 2.32, 128.11) -- TOO LARGE CI
+
+
+#effect modification, stratified analysis for age 
+(table(brfss20$age_group, brfss20$suicide_f))
+#creating stratification
+strat_1824 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_1824 == 1) #18-24
+strat_2534 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_2534 == 1) #25-34
+strat_3544 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_3544 == 1) #35-44
+strat_4554 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_4554 == 1) #45-54
+strat_5564 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_5564 == 1) #55-64
+strat_6574 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_6574 == 1) #65-74
+strat_7584 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_7584 == 1) #75-84
+strat_85ov <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_85ov == 1) #85+
+
+
+#running epi.2by2 analysis
+(PR_1824 <- epi.2by2(make_array(strat_1824), method = 'cross.sectional')) #18-24
+#prevalence ratio = 6.76 (95% CI: 2.74, 16.70)
+(PR_2534 <- epi.2by2(make_array(strat_2534), method = 'cross.sectional')) #25-34
+#prevalence ratio = 22.49 (95% CI: 3.10, 163.14) -- TOO LARGE CI
+(PR_3544 <- epi.2by2(make_array(strat_3544), method = 'cross.sectional')) #35-44
+#prevalence ratio = 4.75 (95% CI: 1.85, 12.20) 
+(PR_4554 <- epi.2by2(make_array(strat_4554), method = 'cross.sectional')) #45-54
+#prevalence ratio = 4.12 (95% CI: 1.60, 10.60) 
+(PR_5564 <- epi.2by2(make_array(strat_5564), method = 'cross.sectional')) #55-64
+#prevalence ratio = 22.86 (95% CI: 3.10, 168.60)  -- TOO LARGE CI
+(PR_6574 <- epi.2by2(make_array(strat_6574), method = 'cross.sectional')) #65-74
+#prevalence ratio = 2.52 (95% CI: 0.92, 6.91)
+(PR_7584 <- epi.2by2(make_array(strat_7584), method = 'cross.sectional')) #75-84
+#prevalence ratio = 10.63 (95% CI: 1.25, 90.61) -- TOO LARGE CI
+(PR_85ov <- epi.2by2(make_array(strat_85ov), method = 'cross.sectional')) #85+
+#prevalence ratio = 11.60 (95% CI: 1.23, 109.54) -- TOO LARGE CI
+
+
+####------COMBINING INTO TABLE 2-------####
+table2_bind <- bind_rows(
+  Overall = as.data.frame(PR$massoc.summary[1, ]),
+  Female  = as.data.frame(PR.f$massoc.summary[1, ]),
+  Male    = as.data.frame(PR.m$massoc.summary[1, ]),
+  .id = "Stratum"
+)
+
+table2 <- as_hux(table2_bind, add_colnames = TRUE)
+(table2 <- theme_bright(
+  table2,
+  header_rows = TRUE,
+  header_cols = FALSE,
+  colors = c("#7eabf2")
+))
+table2 <- add_footnote(table2, "footnote here")
+table2 <- set_caption(table2, "Table 2: ")
+table2 <- set_header_cols(table2, 1, T)
+table2 <- style_headers(table2, bold = T)
+#table2 <- set_all_border_colors(table2, "darkblue")
+#table2 <- set_tb_border_styles(table2, "double")
+table2 <- set_align(table2, 1:4, value = "center")
+
+#exporting into docx file
+quick_docx(table2, file = "table2.docx")
 
