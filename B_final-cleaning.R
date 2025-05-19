@@ -227,3 +227,4 @@ table(brfss20$aces_na)
 ### ---- EXPORTING NEW DATASET ---- ###
 
 write_dta(brfss20, "brfss_2020.dta")
+
