@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Final Data Cleaning
-# Last Edited: 05-16-2025
+# Last Edited: 05-19-2025
 # Description: In this script, we will clean and recode our dataset.
 
 
@@ -172,6 +172,28 @@ brfss20 <- brfss20 %>%
   mutate(
     ace_atleast1 = ifelse(acepunch2 == 1 | acehurt2 == 1 | aceswear2 == 1, 1, 0))
     
+
+#new binary variables for our covariates
+brfss20 <- brfss20 %>%
+  mutate(
+    #age groups (true is 1, false is 2)
+    age_1824 = ifelse(age_group == "18-24", 1, 2), 
+    age_2534 = ifelse(age_group == "25-34", 1, 2),
+    age_3544 = ifelse(age_group == "35-44", 1, 2),
+    age_4554 = ifelse(age_group == "45-54", 1, 2),
+    age_5564 = ifelse(age_group == "55-64", 1, 2),
+    age_6574 = ifelse(age_group == "65-74", 1, 2),
+    age_7584 = ifelse(age_group == "75-84", 1, 2),
+    age_85ov = ifelse(age_group == "85+", 1, 2),
+    #race/ethnicity (true is 1, false is 2)
+    race_wht = ifelse(raceth_f == "White, NH", 1, 2),
+    race_blk = ifelse(raceth_f == "Black, NH", 1, 2),
+    race_asn = ifelse(raceth_f == "Asian, NH", 1, 2),
+    race_aian = ifelse(raceth_f == "AI/AN, NH", 1, 2),
+    race_oth = ifelse(raceth_f == "Another Race Not Listed, NH", 1, 2),
+    race_hisp = ifelse(raceth_f == "Hispanic", 1, 2)
+  )
+
 #label factor ace variables
 #brfss20 <- brfss20 %>%
   #mutate(
