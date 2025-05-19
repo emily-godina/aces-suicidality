@@ -72,11 +72,11 @@ brfss20 <- brfss20 %>%
       hispanc == 2 & prace1 == 2 ~ "Black, NH",
       hispanc == 2 & prace1 == 3 ~ "Asian, NH",
       hispanc == 2 & prace1 == 4 ~ "AI/AN, NH",
-      hispanc == 2 & prace1 == 6 ~ "Other race, NH",
+      hispanc == 2 & prace1 == 6 ~ "Another Race Not Listed, NH",
       TRUE ~ NA_character_
     ),
     raceth_f = factor(raceth_f, levels = c(
-      "White, NH", "Black, NH", "Asian, NH", "AI/AN, NH", "Other race, NH", "Hispanic"))
+      "White, NH", "Black, NH", "Asian, NH", "AI/AN, NH", "Another Race Not Listed, NH", "Hispanic"))
   )
 
 #creating new factored marital status variable
