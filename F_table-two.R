@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Table 2 
-# Last Edited: 05-16-25
+# Last Edited: 05-19-25
 # Description: In this script, we will create a Table 2. 
 
 
@@ -37,7 +37,7 @@ table(brfss20$suicide_f)
 #####----CHI SQUARE TABLE (unadjusted) -----#####
 
 unadj.table <- with(brfss20, table(aces_f, suicide_f), na.rm = TRUE)
-View(unadj.table)
+#View(unadj.table)
 chisq.test(unadj.table)
 #     Pearson's Chi-squared test
 #     data:  unadj.table
@@ -45,7 +45,7 @@ chisq.test(unadj.table)
  
 #at least one ace chisq test
 unadj.table.atl1 <- with(brfss20, table(ace_atleast1, suicide_f), na.rm = TRUE)
-View(unadj.table.atl1)
+#View(unadj.table.atl1)
 chisq.test(unadj.table.atl1)
 #     Pearson's Chi-squared test
 #     X-squared = 138.04, df = 1, p-value < 2.2e-16
