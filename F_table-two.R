@@ -214,28 +214,78 @@ strat_85ov <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_
 #prevalence ratio = 11.60 (95% CI: 1.23, 109.54) -- TOO LARGE CI
 
 
+p_value <- map_dbl(
+  list(PR, PR.m, PR.f, PR_1824, PR_2534, PR_3544, PR_4554, PR_5564, PR_6574, PR_7584,
+       PR_85ov, PR.white, PR.black, PR.asian, PR.aian, PR.other, PR.hispanic, PR.bipoc),
+  ~ .x$massoc.detail$chi2.strata.fisher$p.value.2s)  
+  
+
 ####------COMBINING INTO TABLE 2-------####
 table2_bind <- bind_rows(
-  Overall = as.data.frame(PR$massoc.summary[1, ]),
-  Female  = as.data.frame(PR.f$massoc.summary[1, ]),
-  Male    = as.data.frame(PR.m$massoc.summary[1, ]),
+  Overall     = as.data.frame(t(c(PR$massoc.summary[1, ],  p_value = p_value[1]))),
+  Male        = as.data.frame(t(c(PR.m$massoc.summary[1, ], p_value = p_value[2]))),
+  Female      = as.data.frame(t(c(PR.f$massoc.summary[1, ], p_value = p_value[3]))),
+  "Age 18-24" = as.data.frame(t(c(PR_1824$massoc.summary[1, ], p_value = p_value[4]))),
+  "Age 25-34" = as.data.frame(t(c(PR_2534$massoc.summary[1, ], p_value = p_value[5]))),
+  "Age 35-44" = as.data.frame(t(c(PR_3544$massoc.summary[1, ], p_value = p_value[6]))),
+  "Age 45-54" = as.data.frame(t(c(PR_4554$massoc.summary[1, ], p_value = p_value[7]))),
+  "Age 55-64" = as.data.frame(t(c(PR_5564$massoc.summary[1, ], p_value = p_value[8]))),
+  "Age 65-74" = as.data.frame(t(c(PR_6574$massoc.summary[1, ], p_value = p_value[9]))),
+  "Age 75-84" = as.data.frame(t(c(PR_7584$massoc.summary[1, ], p_value = p_value[10]))),
+  "Age 85+"   = as.data.frame(t(c(PR_85ov$massoc.summary[1, ], p_value = p_value[11]))),
+  "White, NH" = as.data.frame(t(c(PR.white$massoc.summary[1, ], p_value = p_value[12]))),
+  "Black, NH" = as.data.frame(t(c(PR.black$massoc.summary[1, ], p_value = p_value[13]))),
+  "Asian, NH" = as.data.frame(t(c(PR.asian$massoc.summary[1, ], p_value = p_value[14]))),
+  "AI/AN, NH" = as.data.frame(t(c(PR.aian$massoc.summary[1, ], p_value = p_value[15]))),
+  "Other NH"  = as.data.frame(t(c(PR.other$massoc.summary[1, ], p_value = p_value[16]))),
+  Hispanic    = as.data.frame(t(c(PR.hispanic$massoc.summary[1, ], p_value = p_value[17]))),
+  BIPOC       = as.data.frame(t(c(PR.bipoc$massoc.summary[1, ], p_value = p_value[18]))),
   .id = "Stratum"
-)
+) |> 
+  #rouning all values, if p-value is rounded to 0 than put <0.001
+  mutate(across(-Stratum,
+      ~ {x <- round(as.numeric(.x), 3)
+        ifelse(x == 0 | is.na(x), "<0.001", format(x, nsmall = 3))}
+)) 
 
+#make into a huxtable
 table2 <- as_hux(table2_bind, add_colnames = TRUE)
+#remove unwanted column
+table2 <- table2[, -2]
+
+#creating function for inserting new blank rows
+adding_row <- function(table, label, after) {
+  table <- insert_row(table, rep("", ncol(table)), after = after)
+  new_row <- after + 1 
+  table[new_row, 1] <- label
+  table <- merge_cells(table, new_row, 1:ncol(table))
+}
+#labeling row names and using the above function
+table2 <- adding_row(table2, "Sex", after = 2)
+table2 <- adding_row(table2, "Age Group (years)", after = 5)  
+table2 <- adding_row(table2, "Race/Ethnicity", after = 14)
+table2 <- adding_row(table2, "", after = 22)
+
+#hard coding cell colors 
+table2 <- set_background_color(table2, c(2, 4:5, 7:11, 13:14, 16, 19, 21:22), 2:5, "#E0F3CA")
+table2 <- set_background_color(table2, c(12, 15, 17:18, 20), 2:5, "#FCE6E2")
+table2 <- set_background_color(table2, c(2:22), 1, "#D6E7F1")
+
+#setting heading color and overall theme
 (table2 <- theme_bright(
   table2,
   header_rows = TRUE,
   header_cols = FALSE,
-  colors = c("#7eabf2")
+  colors = c("#3C5E7E")
 ))
-table2 <- add_footnote(table2, "footnote here")
-table2 <- set_caption(table2, "Table 2: ")
+
+#modifying other settings for our table 2
+#table2 <- add_footnote(table2, "footnote here")
+table2 <- set_caption(table2, "Table 2. Prevalence Ratios of Active Suicidal Ideation Among Adults With 0 vs ≥1 ACEs — 2020 Washington State, BRFSS (N = 8,106)")
 table2 <- set_header_cols(table2, 1, T)
 table2 <- style_headers(table2, bold = T)
-#table2 <- set_all_border_colors(table2, "darkblue")
-#table2 <- set_tb_border_styles(table2, "double")
-table2 <- set_align(table2, 1:4, value = "center")
+table2 <- set_align(table2, 1:22, value = "center")
+table2 <- set_contents(table2, 1, 1:5, c("Stratum", "PR", "Lower CI", "Upper CI", "p-value")) 
 
 #exporting into docx file
 quick_docx(table2, file = "table2.docx")
