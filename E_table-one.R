@@ -20,14 +20,13 @@ brfss20 <- brfss20 %>%
 
 ### ---- CREATE OUR TABLE 1 ---- ###
 table1 <- brfss20 %>%
-  select(suicide_f, sex_f, age_group, raceth_f, aces_f,
+  select(sex_f, age_group, raceth_f, aces_f,
          marital_f, employ_f, physhlth_f, sleep_f) %>%
   tbl_summary(
     by = aces_f,
     missing = "no",
     percent = "column",
     label = list(
-      suicide_f ~ "Active Suicidal Ideation",
       sex_f ~ "Sex",
       age_group ~ "Age (years)",
       marital_f ~ "Marital Status",
@@ -36,7 +35,6 @@ table1 <- brfss20 %>%
       sleep_f ~ "Average Sleep Duration",
       raceth_f ~ "Race/Ethnicity"
     ),
-    type = list(suicide_f ~ "categorical")
   )  
 
 #view table1
@@ -44,12 +42,11 @@ table1
 
 #new table for total column
 (table2 <- brfss20 %>%
-    select(suicide_f, sex_f, age_group, raceth_f,
+    select(sex_f, age_group, raceth_f,
            marital_f, employ_f, physhlth_f, sleep_f) %>%
     tbl_summary(missing = "no",
                 percent = "column",
                 label = list(
-                  suicide_f ~ "Active Suicidal Ideation",
                   sex_f ~ "Sex",
                   age_group ~ "Age (years)",
                   marital_f ~ "Marital Status",
@@ -58,8 +55,8 @@ table1
                   sleep_f ~ "Average Sleep Duration",
                   raceth_f ~ "Race/Ethnicity"
                 ),
-                type = list(suicide_f ~ "categorical")
-    ))
+    )
+    )
 
 #merging tables
 (table1_merge <- tbl_merge(
@@ -81,11 +78,6 @@ table1
       footnote = "NH = Non-Hispanic",
       columns = "label",
       rows = variable == "raceth_f" & row_type == "label"
-    ) |>
-    modify_footnote_body(
-      footnote = "*At any time in the past 12 months did you seriously think about trying to kill yourself?*",
-      columns = "label",
-      rows = variable == "suicide_f" & row_type == "label"
     ) |>
     modify_footnote_body(
       footnote = "*Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?*",
