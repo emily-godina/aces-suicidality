@@ -167,40 +167,77 @@ p_value <- map_dbl(
   list(PR, PR.m, PR.f, PR_1824, PR_2534, PR_3544, PR_4554, PR_5564, PR_6574, PR_7584,
        PR_85ov, PR.white, PR.black, PR.asian, PR.aian, PR.other, PR.hispanic, PR.bipoc),
   ~ .x$massoc.detail$chi2.strata.fisher$p.value.2s)  
-  
+
+####------CREATING STATUM SUMS-------####
+(sum_Y <- sum(one_ace2x2[1:2,1])) #ASI overall
+(sum_N <- sum(one_ace2x2[1:2,2])) #overall
+(sum_mY <- sum(strat_m[1:2,1])) #ASI male
+(sum_mN <- sum(strat_m[1:2,2])) #male
+(sum_fY <- sum(strat_f[1:2,1])) #ASI female
+(sum_fN <- sum(strat_f[1:2,2])) #female
+(sum_18Y <- sum(strat_1824[1:2,1])) #ASI 18-24
+(sum_18N <- sum(strat_1824[1:2,2])) #18-24
+(sum_25Y <- sum(strat_2534[1:2,1])) #ASI 25-34
+(sum_25N <- sum(strat_2534[1:2,2])) #25-34
+(sum_35Y <- sum(strat_3544[1:2,1])) #ASI 35-44
+(sum_35N <- sum(strat_3544[1:2,2])) #35-44
+(sum_45Y <- sum(strat_4554[1:2,1])) #ASI 45-54
+(sum_45N <- sum(strat_4554[1:2,2])) #45-54
+(sum_55Y <- sum(strat_5564[1:2,1])) #ASI 55-64
+(sum_55N <- sum(strat_5564[1:2,2])) #55-64
+(sum_65Y <- sum(strat_6574[1:2,1])) #ASI 65-74
+(sum_65N <- sum(strat_6574[1:2,2])) #65-74
+(sum_75Y <- sum(strat_7584[1:2,1])) #ASI 75-84
+(sum_75N <- sum(strat_7584[1:2,2])) #75-84
+(sum_85Y <- sum(strat_85ov[1:2,1])) #ASI 85+
+(sum_85N <- sum(strat_85ov[1:2,2])) #85+
+(sum_w1Y <- sum(strat_w1[1:2,1])) #ASI white
+(sum_w1N <- sum(strat_w1[1:2,2])) #white
+(sum_w2Y <- sum(strat_w2[1:2,1])) #ASI bipoc
+(sum_w2N <- sum(strat_w2[1:2,2])) #bipoc
+(sum_bY <- sum(strat_b1[1:2,1])) #ASI black
+(sum_bN <- sum(strat_b1[1:2,2])) #black
+(sum_asY <- sum(strat_as1[1:2,1])) #ASI asian
+(sum_asN <- sum(strat_as1[1:2,2])) #asian
+(sum_aiY <- sum(strat_ai1[1:2,1])) #ASI ai/an
+(sum_aiN <- sum(strat_ai1[1:2,2])) #ai/an
+(sum_oY <- sum(strat_o1[1:2,1])) #ASI other
+(sum_oN <- sum(strat_o1[1:2,2])) #other
+(sum_hY <- sum(strat_h1[1:2,1])) #ASI hispanic
+(sum_hN <- sum(strat_h1[1:2,2])) #hispanic
+
 
 ####------COMBINING INTO TABLE 2-------####
 table2_bind <- bind_rows(
-  Overall     = as.data.frame(t(c(PR$massoc.summary[1, ],  p_value = p_value[1]))),
-  Male        = as.data.frame(t(c(PR.m$massoc.summary[1, ], p_value = p_value[2]))),
-  Female      = as.data.frame(t(c(PR.f$massoc.summary[1, ], p_value = p_value[3]))),
-  "Age 18-24" = as.data.frame(t(c(PR_1824$massoc.summary[1, ], p_value = p_value[4]))),
-  "Age 25-34" = as.data.frame(t(c(PR_2534$massoc.summary[1, ], p_value = p_value[5]))),
-  "Age 35-44" = as.data.frame(t(c(PR_3544$massoc.summary[1, ], p_value = p_value[6]))),
-  "Age 45-54" = as.data.frame(t(c(PR_4554$massoc.summary[1, ], p_value = p_value[7]))),
-  "Age 55-64" = as.data.frame(t(c(PR_5564$massoc.summary[1, ], p_value = p_value[8]))),
-  "Age 65-74" = as.data.frame(t(c(PR_6574$massoc.summary[1, ], p_value = p_value[9]))),
-  "Age 75-84" = as.data.frame(t(c(PR_7584$massoc.summary[1, ], p_value = p_value[10]))),
-  "Age 85+"   = as.data.frame(t(c(PR_85ov$massoc.summary[1, ], p_value = p_value[11]))),
-  "White, NH" = as.data.frame(t(c(PR.white$massoc.summary[1, ], p_value = p_value[12]))),
-  "Black, NH" = as.data.frame(t(c(PR.black$massoc.summary[1, ], p_value = p_value[13]))),
-  "Asian, NH" = as.data.frame(t(c(PR.asian$massoc.summary[1, ], p_value = p_value[14]))),
-  "AI/AN, NH" = as.data.frame(t(c(PR.aian$massoc.summary[1, ], p_value = p_value[15]))),
-  "Other NH"  = as.data.frame(t(c(PR.other$massoc.summary[1, ], p_value = p_value[16]))),
-  Hispanic    = as.data.frame(t(c(PR.hispanic$massoc.summary[1, ], p_value = p_value[17]))),
-  BIPOC       = as.data.frame(t(c(PR.bipoc$massoc.summary[1, ], p_value = p_value[18]))),
+  Overall     = as.data.frame(t(c(sum_Y, sum_N, PR$massoc.summary[1, ],  p_value = p_value[1]))),
+  Male        = as.data.frame(t(c(sum_mY, sum_mN, PR.m$massoc.summary[1, ], p_value = p_value[2]))),
+  Female      = as.data.frame(t(c(sum_fY, sum_fN, PR.f$massoc.summary[1, ], p_value = p_value[3]))),
+  "Age 18-24" = as.data.frame(t(c(sum_18Y, sum_18N, PR_1824$massoc.summary[1, ], p_value = p_value[4]))),
+  "Age 25-34" = as.data.frame(t(c(sum_25Y, sum_25N, PR_2534$massoc.summary[1, ], p_value = p_value[5]))),
+  "Age 35-44" = as.data.frame(t(c(sum_35Y, sum_35N, PR_3544$massoc.summary[1, ], p_value = p_value[6]))),
+  "Age 45-54" = as.data.frame(t(c(sum_45Y, sum_45N, PR_4554$massoc.summary[1, ], p_value = p_value[7]))),
+  "Age 55-64" = as.data.frame(t(c(sum_55Y, sum_55N, PR_5564$massoc.summary[1, ], p_value = p_value[8]))),
+  "Age 65-74" = as.data.frame(t(c(sum_65Y, sum_65N, PR_6574$massoc.summary[1, ], p_value = p_value[9]))),
+  "Age 75-84" = as.data.frame(t(c(sum_75Y, sum_75N, PR_7584$massoc.summary[1, ], p_value = p_value[10]))),
+  "Age 85+"   = as.data.frame(t(c(sum_85Y, sum_85N, PR_85ov$massoc.summary[1, ], p_value = p_value[11]))),
+  "White, NH" = as.data.frame(t(c(sum_w1Y, sum_w1N, PR.white$massoc.summary[1, ], p_value = p_value[12]))),
+  "Black, NH" = as.data.frame(t(c(sum_bY, sum_bN, PR.black$massoc.summary[1, ], p_value = p_value[13]))),
+  "Asian, NH" = as.data.frame(t(c(sum_asY, sum_asN, PR.asian$massoc.summary[1, ], p_value = p_value[14]))),
+  "AI/AN, NH" = as.data.frame(t(c(sum_aiY, sum_aiN, PR.aian$massoc.summary[1, ], p_value = p_value[15]))),
+  "Other, NH"  = as.data.frame(t(c(sum_oY, sum_oN, PR.other$massoc.summary[1, ], p_value = p_value[16]))),
+  Hispanic    = as.data.frame(t(c(sum_hY, sum_hN, PR.hispanic$massoc.summary[1, ], p_value = p_value[17]))),
+  BIPOC       = as.data.frame(t(c(sum_w2Y, sum_w2N, PR.bipoc$massoc.summary[1, ], p_value = p_value[18]))),
   .id = "Stratum"
-) |> 
-  #rouning all values, if p-value is rounded to 0 than put <0.001
-  mutate(across(-Stratum,
-      ~ {x <- round(as.numeric(.x), 3)
-        ifelse(x == 0 | is.na(x), "<0.001", format(x, nsmall = 3))}
-)) 
+) |>
+  mutate(across(-Stratum, 
+                ~ {x <- round(as.numeric(.x), 3)
+                ifelse(x == 0 | is.na(x), "<0.001", format(x, nsmall = 0))}
+  )) 
 
 #make into a huxtable
 table2 <- as_hux(table2_bind, add_colnames = TRUE)
 #remove unwanted column
-table2 <- table2[, -2]
+table2 <- table2[, -4]
 
 #creating function for inserting new blank rows
 adding_row <- function(table, label, after) {
@@ -216,8 +253,8 @@ table2 <- adding_row(table2, "Race/Ethnicity", after = 14)
 #table2 <- adding_row(table2, "", after = 22)
 
 #hard coding cell colors 
-table2 <- set_background_color(table2, c(2, 4:5, 7:11, 13:14, 16, 19, 21:22), 2:5, "#E0F3CA")
-table2 <- set_background_color(table2, c(12, 15, 17:18, 20), 2:5, "#FCE6E2")
+table2 <- set_background_color(table2, c(2, 4:5, 7:11, 13:14, 16, 19, 21:22), 2:7, "#E0F3CA")
+table2 <- set_background_color(table2, c(12, 15, 17:18, 20), 2:7, "#FCE6E2")
 table2 <- set_background_color(table2, c(2:22), 1, "#D6E7F1")
 
 #
@@ -241,7 +278,7 @@ table2 <- set_bold(table2, nrow(table2), 1:ncol(table2), FALSE)
 table2 <- set_italic(table2, nrow(table2), 1:ncol(table2), TRUE)
 table2 <- set_text_color(table2, 1, 1:ncol(table2),"white")
 table2 <- set_align(table2, 1:23, value = "center")
-table2 <- set_contents(table2, 2, 1:5, c("Stratum", "PR", "Lower CI", "Upper CI", "p-value")) 
+table2 <- set_contents(table2, 2, 1:7, c("Stratum", "With ASI", "Without ASI", "PR", "Lower CI", "Upper CI", "p-value")) 
 
 #exporting into docx file
 quick_docx(table2, file = "table2.docx")
