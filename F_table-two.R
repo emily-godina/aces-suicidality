@@ -264,12 +264,16 @@ adding_row <- function(table, label, after) {
 table2 <- adding_row(table2, "Sex", after = 2)
 table2 <- adding_row(table2, "Age Group (years)", after = 5)  
 table2 <- adding_row(table2, "Race/Ethnicity", after = 14)
-table2 <- adding_row(table2, "", after = 22)
+#table2 <- adding_row(table2, "", after = 22)
 
 #hard coding cell colors 
 table2 <- set_background_color(table2, c(2, 4:5, 7:11, 13:14, 16, 19, 21:22), 2:5, "#E0F3CA")
 table2 <- set_background_color(table2, c(12, 15, 17:18, 20), 2:5, "#FCE6E2")
 table2 <- set_background_color(table2, c(2:22), 1, "#D6E7F1")
+
+#
+table2 <- adding_row(table2, "Prevalence Ratios of WA Adults with ACEs that Experienced Active Suicidal Ideation", after = 0)
+table2 <- set_background_color(table2, 1, 1, "#3C5E7E")
 
 #setting heading color and overall theme
 (table2 <- theme_bright(
@@ -280,12 +284,15 @@ table2 <- set_background_color(table2, c(2:22), 1, "#D6E7F1")
 ))
 
 #modifying other settings for our table 2
-#table2 <- add_footnote(table2, "footnote here")
+table2 <- add_footnote(table2, "BIPOC = Black, Indigenous, and People of Color \n *Unadjusted (no confounders found) and unweighted prevalence ratios")
 table2 <- set_caption(table2, "Table 2. Prevalence Ratios of Active Suicidal Ideation Among Adults With 0 vs ≥1 ACEs — 2020 Washington State, BRFSS (N = 8,106)")
 table2 <- set_header_cols(table2, 1, T)
 table2 <- style_headers(table2, bold = T)
-table2 <- set_align(table2, 1:22, value = "center")
-table2 <- set_contents(table2, 1, 1:5, c("Stratum", "PR", "Lower CI", "Upper CI", "p-value")) 
+table2 <- set_bold(table2, nrow(table2), 1:ncol(table2), FALSE)
+table2 <- set_italic(table2, nrow(table2), 1:ncol(table2), TRUE)
+table2 <- set_text_color(table2, 1, 1:ncol(table2),"white")
+table2 <- set_align(table2, 1:23, value = "center")
+table2 <- set_contents(table2, 2, 1:5, c("Stratum", "PR", "Lower CI", "Upper CI", "p-value")) 
 
 #exporting into docx file
 quick_docx(table2, file = "table2.docx")
