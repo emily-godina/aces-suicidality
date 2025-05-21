@@ -98,3 +98,18 @@ table1
       ~ .x %>%
         filter(!(variable == "suicide_f" & !label %in% c("Active Suicidal Ideation", "Yes", "No")))))
 
+
+### ---- EXPORTING OUR TABLE 1 ---- ###
+
+#creating exportable version for docx
+table1_flex <- as_flex_table(table1_merge)  %>%
+  fontsize(size = 10, part = "all") %>%
+  padding(padding = 3, part = "all") %>%
+  set_table_properties(width = 0.95, layout = "autofit")
+
+doc <- read_docx() %>%       
+  body_add_flextable(table1_flex)  
+
+#exporting to a docx file
+print(doc, target = "table1_flex-ver.docx")
+
