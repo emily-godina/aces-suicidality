@@ -65,7 +65,7 @@ table1
     bold_labels() |>
     modify_caption("**Table 1** Sociodemographic Characteristics of Adults with Adverse Childhood Experience(s) by Active Suicidal Ideation in the Last 12 Months - 2020 Washington State, Behavioral Risk Factor Surveillance Survey (N = 8,365)") %>%
     modify_spanning_header(all_stat_cols() ~ 
-                             "**Adverse Childhood Experiences**<br>*Household Violence, Physical Abuse, and Verbal Abuse*") |>
+                             "**Adverse Childhood Experiences**<br>*Physical Abuse, Verbal Abuse, and Household Violence*") |>
     remove_footnote_header(columns = all_stat_cols()) |>
     modify_header(all_stat_cols() ~ glue("**{{level}}**<br>N = {{n}} ({{round(p * 100, 1)}}%)")) |> 
     modify_footnote_spanning_header(
