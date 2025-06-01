@@ -8,6 +8,7 @@ library(tidyverse)
 library(haven)
 library(gtsummary)
 library(gt)
+library(glue)
 library(labelled)
 
 
@@ -66,7 +67,7 @@ table1
     modify_spanning_header(all_stat_cols() ~ 
                              "**Adverse Childhood Experiences**<br>*Household Violence, Physical Abuse, and Verbal Abuse*") |>
     remove_footnote_header(columns = all_stat_cols()) |>
-    modify_header(all_stat_cols() ~ "**{level}**  \nN = {n} ({style_percent(p)}%)") |> 
+    modify_header(all_stat_cols() ~ glue("**{{level}}**<br>N = {{n}} ({{round(p * 100, 1)}}%)")) |> 
     modify_footnote_spanning_header(
       footnote = "*Did your parents or adults in your home ever slap, hit, kick, punch or beat each other up?*<br>
                 &nbsp; *Did your parents or adult in your home ever hit, beat, kick, or physically hurt you in any way?*<br>
