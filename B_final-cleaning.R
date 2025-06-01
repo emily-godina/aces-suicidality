@@ -226,7 +226,7 @@ brfss20 <- brfss20 %>%
     aces_na = rowSums(is.na(across(c(acepunch2, acehurt2, aceswear2)))),
     aces_f = factor(aces_sum,
                     levels = c(0, 1, 2, 3),
-                    labels = c("No ACEs", "1 ACE", "2 ACEs", "3 ACEs"))
+                    labels = c("No PVWs", "1 PVW", "2 PVWs", "3 PVWs"))
     )
 
 #checking quantities 
