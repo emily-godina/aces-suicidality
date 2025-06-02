@@ -75,12 +75,12 @@ strat_m <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = sex_f =
 #naming our margins 
 array_f <- array(strat_f,
                  dim = c(2,2), 
-                 list(exposure = c('1+ ACEs', 'No ACEs'), 
+                 list(exposure = c('1+ PVWs', 'No PVWs'), 
                       outcomes = c('Suicidal Ideation', 'No Suicidal Ideation'))) 
 
 array_m <- array(strat_m,
                  dim = c(2,2), 
-                 list(exposure =c('1+ ACEs', 'No ACEs'), 
+                 list(exposure =c('1+ PVWs', 'No PVWs'), 
                       outcomes = c('Suicidal Ideation', 'No Suicidal Ideation'))) 
 
 #running epi.2by2 analysis
@@ -105,7 +105,7 @@ strat_h1 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = race_h
 make_array <- function(strat, out_name = deparse(substitute(strat))) {
   arr <- array(strat,
                dim = c(2, 2),
-               list(exposure = c("1+ ACEs", "No ACEs"),
+               list(exposure = c("1+ PVWs", "No PVWs"),
                outcomes = c("Suicidal Ideation", "No Suicidal Ideation")))
   assign(sub("strat_", "array_", out_name), arr, envir = .GlobalEnv)
 }
@@ -142,6 +142,11 @@ strat_5564 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_
 strat_6574 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_6574 == 1) #65-74
 strat_7584 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_7584 == 1) #75-84
 strat_85ov <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_85ov == 1) #85+
+#new age stratification
+strat_1834 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_1834 == 1) #18-34
+strat_3554 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_3554 == 1) #35-54
+strat_5574 <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_5574 == 1) #55-74
+strat_75ov <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_75ov == 1) #75+
 
 
 #running epi.2by2 analysis
@@ -161,11 +166,21 @@ strat_85ov <- xtabs(~ace_atleast1_12 + suicide_12, data = brfss20, subset = age_
 #prevalence ratio = 10.63 (95% CI: 1.25, 90.61) -- TOO LARGE CI
 (PR_85ov <- epi.2by2(make_array(strat_85ov), method = 'cross.sectional')) #85+
 #prevalence ratio = 11.60 (95% CI: 1.23, 109.54) -- TOO LARGE CI
+#--------------#
+(PR_1834 <- epi.2by2(make_array(strat_1834), method = 'cross.sectional')) #18-34
+#prevalence ratio = 9.13 (95% CI: 4.02, 20.75)
+(PR_3554 <- epi.2by2(make_array(strat_3554), method = 'cross.sectional')) #35-54
+#prevalence ratio = 4.11 (95% CI: 2.33, 8.59)
+(PR_5574 <- epi.2by2(make_array(strat_5574), method = 'cross.sectional')) #55-74
+#prevalence ratio = 5.89 (95% CI: 2.62, 13.24) 
+(PR_75ov <- epi.2by2(make_array(strat_75ov), method = 'cross.sectional')) #75+
+#prevalence ratio = 9.59 (95% CI: 2.04, 44.93) 
 
 
 p_value <- map_dbl(
   list(PR, PR.m, PR.f, PR_1824, PR_2534, PR_3544, PR_4554, PR_5564, PR_6574, PR_7584,
-       PR_85ov, PR.white, PR.black, PR.asian, PR.aian, PR.other, PR.hispanic, PR.bipoc),
+       PR_85ov, PR.white, PR.black, PR.asian, PR.aian, PR.other, PR.hispanic, PR.bipoc,
+       PR_1834, PR_3554, PR_5574, PR_75ov),
   ~ .x$massoc.detail$chi2.strata.fisher$p.value.2s)  
 
 ####------CREATING STATUM SUMS-------####
@@ -179,18 +194,26 @@ p_value <- map_dbl(
 (sum_18N <- sum(strat_1824[1:2,2])) #18-24
 (sum_25Y <- sum(strat_2534[1:2,1])) #ASI 25-34
 (sum_25N <- sum(strat_2534[1:2,2])) #25-34
+(sumsum18Y <- sum_18Y + sum_25Y)
+(sumsum18N <- sum_18N + sum_25N)
 (sum_35Y <- sum(strat_3544[1:2,1])) #ASI 35-44
 (sum_35N <- sum(strat_3544[1:2,2])) #35-44
 (sum_45Y <- sum(strat_4554[1:2,1])) #ASI 45-54
 (sum_45N <- sum(strat_4554[1:2,2])) #45-54
+(sumsum35Y <- sum_35Y + sum_45Y)
+(sumsum35N <- sum_35N + sum_45N)
 (sum_55Y <- sum(strat_5564[1:2,1])) #ASI 55-64
 (sum_55N <- sum(strat_5564[1:2,2])) #55-64
 (sum_65Y <- sum(strat_6574[1:2,1])) #ASI 65-74
 (sum_65N <- sum(strat_6574[1:2,2])) #65-74
+(sumsum55Y <- sum_55Y + sum_65Y)
+(sumsum55N <- sum_55N + sum_65N)
 (sum_75Y <- sum(strat_7584[1:2,1])) #ASI 75-84
 (sum_75N <- sum(strat_7584[1:2,2])) #75-84
 (sum_85Y <- sum(strat_85ov[1:2,1])) #ASI 85+
 (sum_85N <- sum(strat_85ov[1:2,2])) #85+
+(sumsum75Y <- sum_75Y + sum_85Y)
+(sumsum75N <- sum_75N + sum_85N)
 (sum_w1Y <- sum(strat_w1[1:2,1])) #ASI white
 (sum_w1N <- sum(strat_w1[1:2,2])) #white
 (sum_w2Y <- sum(strat_w2[1:2,1])) #ASI bipoc
@@ -212,21 +235,25 @@ table2_bind <- bind_rows(
   Overall     = as.data.frame(t(c(sum_Y, sum_N, PR$massoc.summary[1, ],  p_value = p_value[1]))),
   Male        = as.data.frame(t(c(sum_mY, sum_mN, PR.m$massoc.summary[1, ], p_value = p_value[2]))),
   Female      = as.data.frame(t(c(sum_fY, sum_fN, PR.f$massoc.summary[1, ], p_value = p_value[3]))),
-  "Age 18-24" = as.data.frame(t(c(sum_18Y, sum_18N, PR_1824$massoc.summary[1, ], p_value = p_value[4]))),
-  "Age 25-34" = as.data.frame(t(c(sum_25Y, sum_25N, PR_2534$massoc.summary[1, ], p_value = p_value[5]))),
-  "Age 35-44" = as.data.frame(t(c(sum_35Y, sum_35N, PR_3544$massoc.summary[1, ], p_value = p_value[6]))),
-  "Age 45-54" = as.data.frame(t(c(sum_45Y, sum_45N, PR_4554$massoc.summary[1, ], p_value = p_value[7]))),
-  "Age 55-64" = as.data.frame(t(c(sum_55Y, sum_55N, PR_5564$massoc.summary[1, ], p_value = p_value[8]))),
-  "Age 65-74" = as.data.frame(t(c(sum_65Y, sum_65N, PR_6574$massoc.summary[1, ], p_value = p_value[9]))),
-  "Age 75-84" = as.data.frame(t(c(sum_75Y, sum_75N, PR_7584$massoc.summary[1, ], p_value = p_value[10]))),
-  "Age 85+"   = as.data.frame(t(c(sum_85Y, sum_85N, PR_85ov$massoc.summary[1, ], p_value = p_value[11]))),
+  #"Age 18-24" = as.data.frame(t(c(sum_18Y, sum_18N, PR_1824$massoc.summary[1, ], p_value = p_value[4]))),
+  #"Age 25-34" = as.data.frame(t(c(sum_25Y, sum_25N, PR_2534$massoc.summary[1, ], p_value = p_value[5]))),
+  #"Age 35-44" = as.data.frame(t(c(sum_35Y, sum_35N, PR_3544$massoc.summary[1, ], p_value = p_value[6]))),
+  #"Age 45-54" = as.data.frame(t(c(sum_45Y, sum_45N, PR_4554$massoc.summary[1, ], p_value = p_value[7]))),
+  #"Age 55-64" = as.data.frame(t(c(sum_55Y, sum_55N, PR_5564$massoc.summary[1, ], p_value = p_value[8]))),
+  #"Age 65-74" = as.data.frame(t(c(sum_65Y, sum_65N, PR_6574$massoc.summary[1, ], p_value = p_value[9]))),
+  #"Age 75-84" = as.data.frame(t(c(sum_75Y, sum_75N, PR_7584$massoc.summary[1, ], p_value = p_value[10]))),
+  #"Age 85+"   = as.data.frame(t(c(sum_85Y, sum_85N, PR_85ov$massoc.summary[1, ], p_value = p_value[11]))),
+  "Age 18-34" = as.data.frame(t(c(sumsum18Y, sumsum18N, PR_1834$massoc.summary[1, ], p_value = p_value[19]))),
+  "Age 35-54" = as.data.frame(t(c(sumsum35Y, sumsum35N, PR_3554$massoc.summary[1, ], p_value = p_value[20]))),
+  "Age 55-74" = as.data.frame(t(c(sumsum55Y, sumsum55N, PR_5574$massoc.summary[1, ], p_value = p_value[21]))),
+  "Age 75+" = as.data.frame(t(c(sumsum75Y, sumsum75N, PR_75ov$massoc.summary[1, ], p_value = p_value[22]))),
   "White, NH" = as.data.frame(t(c(sum_w1Y, sum_w1N, PR.white$massoc.summary[1, ], p_value = p_value[12]))),
   "Black, NH" = as.data.frame(t(c(sum_bY, sum_bN, PR.black$massoc.summary[1, ], p_value = p_value[13]))),
   "Asian, NH" = as.data.frame(t(c(sum_asY, sum_asN, PR.asian$massoc.summary[1, ], p_value = p_value[14]))),
   "AI/AN, NH" = as.data.frame(t(c(sum_aiY, sum_aiN, PR.aian$massoc.summary[1, ], p_value = p_value[15]))),
-  "Other, NH"  = as.data.frame(t(c(sum_oY, sum_oN, PR.other$massoc.summary[1, ], p_value = p_value[16]))),
   Hispanic    = as.data.frame(t(c(sum_hY, sum_hN, PR.hispanic$massoc.summary[1, ], p_value = p_value[17]))),
   BIPOC       = as.data.frame(t(c(sum_w2Y, sum_w2N, PR.bipoc$massoc.summary[1, ], p_value = p_value[18]))),
+  "Another Race, NH"  = as.data.frame(t(c(sum_oY, sum_oN, PR.other$massoc.summary[1, ], p_value = p_value[16]))),
   .id = "Stratum"
 ) |>
   mutate(across(-Stratum, 
@@ -249,16 +276,16 @@ adding_row <- function(table, label, after) {
 #labeling row names and using the above function
 table2 <- adding_row(table2, "Sex", after = 2)
 table2 <- adding_row(table2, "Age Group (years)", after = 5)  
-table2 <- adding_row(table2, "Race/Ethnicity", after = 14)
+table2 <- adding_row(table2, "Race/Ethnicity", after = 10)
 #table2 <- adding_row(table2, "", after = 22)
 
 #hard coding cell colors 
-table2 <- set_background_color(table2, c(2, 4:5, 7:11, 13:14, 16, 19, 21:22), 2:7, "#E0F3CA")
-table2 <- set_background_color(table2, c(12, 15, 17:18, 20), 2:7, "#FCE6E2")
-table2 <- set_background_color(table2, c(2:22), 1, "#D6E7F1")
+table2 <- set_background_color(table2, c(2, 4:5, 7:10, 12, 15:17), 2:7, "#E0F3CA")
+table2 <- set_background_color(table2, c(13:14, 18), 2:7, "#FCE6E2")
+table2 <- set_background_color(table2, c(2:18), 1, "#D6E7F1")
 
 #
-table2 <- adding_row(table2, "Prevalence Ratios of WA Adults with ACEs that Experienced Active Suicidal Ideation", after = 0)
+table2 <- adding_row(table2, "Prevalence Ratios of WA Adults with PVWs that Experienced Active Suicidal Ideation", after = 0)
 table2 <- set_background_color(table2, 1, 1, "#3C5E7E")
 
 #setting heading color and overall theme
@@ -271,15 +298,15 @@ table2 <- set_background_color(table2, 1, 1, "#3C5E7E")
 
 #modifying other settings for our table 2
 table2 <- add_footnote(table2, "BIPOC = Black, Indigenous, and People of Color \n *Unadjusted (no confounders found) and unweighted prevalence ratios")
-table2 <- set_caption(table2, "Table 2. Prevalence Ratios of Active Suicidal Ideation Among Adults With 0 vs ≥1 ACEs — 2020 Washington State, BRFSS (N = 8,106)")
+table2 <- set_caption(table2, "Table 2. Prevalence Ratios of Active Suicidal Ideation Among Adults With 0 vs ≥1 PVWs — 2020 Washington State, BRFSS (N = 8,106)")
 table2 <- set_header_cols(table2, 1, T)
 table2 <- style_headers(table2, bold = T)
 table2 <- set_bold(table2, nrow(table2), 1:ncol(table2), FALSE)
 table2 <- set_italic(table2, nrow(table2), 1:ncol(table2), TRUE)
 table2 <- set_text_color(table2, 1, 1:ncol(table2),"white")
-table2 <- set_align(table2, 1:23, value = "center")
+table2 <- set_align(table2, 1:19, value = "center")
 table2 <- set_contents(table2, 2, 1:7, c("Stratum", "With ASI", "Without ASI", "PR", "Lower CI", "Upper CI", "p-value")) 
 
 #exporting into docx file
-quick_docx(table2, file = "table2.docx")
+quick_docx(table2, file = "table2v3.docx")
 

@@ -185,6 +185,11 @@ brfss20 <- brfss20 %>%
     age_6574 = ifelse(age_group == "65-74", 1, 2),
     age_7584 = ifelse(age_group == "75-84", 1, 2),
     age_85ov = ifelse(age_group == "85+", 1, 2),
+    #new age groups (true is 1, false is 2)
+    age_1834 = ifelse(age_group == "18-24" | age_group == "25-34", 1, 2), 
+    age_3554 = ifelse(age_group == "35-44" | age_group == "45-54", 1, 2),
+    age_5574 = ifelse(age_group == "55-64" | age_group == "65-74", 1, 2),
+    age_75ov = ifelse(age_group == "75-84" | age_group == "85+", 1, 2),
     #race/ethnicity (true is 1, false is 2)
     race_wht = ifelse(raceth_f == "White, NH", 1, 2),
     race_blk = ifelse(raceth_f == "Black, NH", 1, 2),
