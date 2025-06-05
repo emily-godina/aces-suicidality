@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Table 1 
-# Last Edited: 04-14-25
+# Last Edited: 06-03-25
 # Description: In this script, we will create a Table 1. 
 
 
@@ -10,6 +10,8 @@ library(gtsummary)
 library(gt)
 library(glue)
 library(labelled)
+library(flextable)
+library(officer)
 
 
 #importing dataset
@@ -112,5 +114,5 @@ doc <- read_docx() %>%
   body_add_flextable(table1_flex)  
 
 #exporting to a docx file
-print(doc, target = "table1_flex-ver.docx")
+print(doc, target = "table1_flex-final.docx")
 
