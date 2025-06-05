@@ -310,3 +310,98 @@ table2 <- set_contents(table2, 2, 1:7, c("Stratum", "With ASI", "Without ASI", "
 #exporting into docx file
 quick_docx(table2, file = "table2v3.docx")
 
+
+####------Data Visualization of PR w/ CIs-------####
+
+ggplot_data <- data.frame(
+  var = c("Overall", "Male", "Female", "Age: 18-34", "Age: 35-54", 
+          "Age: 55-74", "Age: 75+",  "White, NH", "BIPOC",
+          "*Black, NH", "*Asian, NH", "AI/AN, NH", "Hispanic", "*Another \nRace, NH"),
+  est = c(PR$massoc.summary[1, "est"],
+          PR.m$massoc.summary[1, "est"],
+          PR.f$massoc.summary[1, "est"],
+          PR_1834$massoc.summary[1, "est"],
+          PR_3554$massoc.summary[1, "est"],
+          PR_5574$massoc.summary[1, "est"],
+          PR_75ov$massoc.summary[1, "est"],
+          PR.white$massoc.summary[1, "est"],
+          PR.bipoc$massoc.summary[1, "est"],
+          PR.black$massoc.summary[1, "est"],
+          PR.asian$massoc.summary[1, "est"],
+          PR.aian$massoc.summary[1, "est"],
+          PR.hispanic$massoc.summary[1, "est"],
+          PR.other$massoc.summary[1, "est"]),
+  lower = c(PR$massoc.summary[1, "lower"],
+            PR.m$massoc.summary[1, "lower"],
+            PR.f$massoc.summary[1, "lower"],
+            PR_1834$massoc.summary[1, "lower"],
+            PR_3554$massoc.summary[1, "lower"],
+            PR_5574$massoc.summary[1, "lower"],
+            PR_75ov$massoc.summary[1, "lower"],
+            PR.white$massoc.summary[1, "lower"],
+            PR.bipoc$massoc.summary[1, "lower"],
+            PR.black$massoc.summary[1, "lower"],
+            PR.asian$massoc.summary[1, "lower"],
+            PR.aian$massoc.summary[1, "lower"],
+            PR.hispanic$massoc.summary[1, "lower"],
+            PR.other$massoc.summary[1, "lower"]),
+  upper = c(PR$massoc.summary[1, "upper"],
+            PR.m$massoc.summary[1, "upper"],
+            PR.f$massoc.summary[1, "upper"],
+            PR_1834$massoc.summary[1, "upper"],
+            PR_3554$massoc.summary[1, "upper"],
+            PR_5574$massoc.summary[1, "upper"],
+            PR_75ov$massoc.summary[1, "upper"],
+            PR.white$massoc.summary[1, "upper"],
+            PR.bipoc$massoc.summary[1, "upper"],
+            PR.black$massoc.summary[1, "upper"],
+            PR.asian$massoc.summary[1, "upper"],
+            PR.aian$massoc.summary[1, "upper"],
+            PR.hispanic$massoc.summary[1, "upper"],
+            PR.other$massoc.summary[1, "upper"])
+)
+
+ggplot_data$var <- factor(ggplot_data$var, levels = ggplot_data$var)
+
+ggplot(ggplot_data, aes(x = var, y = est, ymin = lower, ymax = upper)) +
+geom_rect(data = subset(ggplot_data, var == "Overall"),
+          aes(xmin = as.numeric(var) - 0.5, 
+              xmax = as.numeric(var) + 0.5,
+              alpha = 0.3, ymin = -Inf, ymax = Inf),
+          fill = "black", inherit.aes = FALSE) +
+  geom_pointrange(shape = 18, size = 1.1, aes(color = var)) +  
+  scale_color_manual(values = c(
+    "Overall" = "white",
+    "Male" = "deeppink3",
+    "Female" = "deeppink3",
+    "Age: 18-34" = "steelblue",
+    "Age: 35-54" = "steelblue",
+    "Age: 55-74" = "steelblue",
+    "Age: 75+" = "steelblue",
+    "White, NH" = "purple2",
+    "*Black, NH" = "slateblue4",
+    "*Asian, NH" = "slateblue4",
+    "AI/AN, NH" = "purple2",
+    "Hispanic" = "purple2",
+    "BIPOC" = "purple2",
+    "*Another \nRace, NH" = "slateblue4"
+  )) +
+  labs(
+    x = "Demographic Subgroup",
+    y = "Prevalence Ratio (95% CI)",
+    title = "Stratified Analyses of Active Suicidal Ideation Among Adults 
+    With 0 vs ≥1 PVWs — 2020 Washington State, BRFSS (N = 8,106)"
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 140, 10),  
+    limits = c(0, 135)         
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    axis.text.y = element_text(size = 10),
+    axis.text.x = element_text(size = 10),
+    axis.title.x = element_text(size = 13, face = "bold"),
+    axis.title.y = element_text(size = 13, face = "bold")
+  ) + theme(legend.position = "none")
+
