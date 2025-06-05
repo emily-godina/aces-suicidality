@@ -1,5 +1,5 @@
 # TITLE: WA BRFSS 2020 - Final Data Cleaning
-# Last Edited: 05-19-2025
+# Last Edited: 06-03-2025
 # Description: In this script, we will clean and recode our dataset.
 
 
@@ -94,7 +94,7 @@ brfss20 <- brfss20 %>%
     ),
     marital_f = factor(marital_f, levels = c(
       "Married", "Domestic Partnership", "Unmarried Couple", "Never Married",
-      "Seperated","Divorced", "Widowed"
+      "Separated","Divorced", "Widowed"
       ))
 )
   
